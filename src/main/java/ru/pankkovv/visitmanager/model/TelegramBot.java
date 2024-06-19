@@ -1,6 +1,5 @@
 package ru.pankkovv.visitmanager.model;
 
-import org.checkerframework.checker.units.qual.C;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -32,7 +31,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         try {
             execute(service.mapCommand(update));
-
         } catch (TelegramApiException e) {
             throw new RuntimeException();
         }

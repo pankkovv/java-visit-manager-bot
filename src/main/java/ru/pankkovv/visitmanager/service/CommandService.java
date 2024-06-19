@@ -16,10 +16,13 @@ public class CommandService {
 
             switch (messageText) {
                 case "/start":
-                    sendMessage.setChatId(String.valueOf(chatId));
                     sendMessage.setText("Start");
                     break;
+                default:
+                    sendMessage.setText("Я не понимаю ваш запрос");
             }
+
+            sendMessage.setChatId(String.valueOf(chatId));
         }
 
         return sendMessage;
