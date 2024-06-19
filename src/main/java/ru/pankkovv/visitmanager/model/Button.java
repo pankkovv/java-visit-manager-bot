@@ -25,7 +25,6 @@ public class Button {
         helpButton.setText(ButtonMessage.HELP.label);
         helpButton.setCallbackData(ButtonData.HELP_BTN.label);
 
-
         InlineKeyboardButton regButton = new InlineKeyboardButton();
         regButton.setText(ButtonMessage.REGISTRATION.label);
         regButton.setCallbackData(ButtonData.REGISTRATION_BTN.label);
