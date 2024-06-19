@@ -5,7 +5,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Service
-public class CommandService {
+public class BotService {
 
     public SendMessage mapCommand(Update update) {
         SendMessage sendMessage = new SendMessage();

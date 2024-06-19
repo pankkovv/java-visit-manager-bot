@@ -5,14 +5,14 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.pankkovv.visitmanager.config.BotConfig;
-import ru.pankkovv.visitmanager.service.CommandService;
+import ru.pankkovv.visitmanager.service.BotService;
 
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
     private final BotConfig config;
-    private final CommandService service;
+    private final BotService service;
 
-    public TelegramBot(BotConfig config, CommandService service) {
+    public TelegramBot(BotConfig config, BotService service) {
         this.config = config;
         this.service = service;
     }
