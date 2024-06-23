@@ -1,7 +1,8 @@
 package ru.pankkovv.visitmanager.service;
 
-import org.springframework.stereotype.Service;
+import ru.pankkovv.visitmanager.model.User;
 
-@Service
-public class UserService {
+public interface UserService {
+    User create(String username);
+    boolean containsUser(String userName);
 }

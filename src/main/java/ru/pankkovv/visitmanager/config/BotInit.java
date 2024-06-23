@@ -10,7 +10,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import ru.pankkovv.visitmanager.model.TelegramBot;
 
 @Component
-public class BotInitializer {
+public class BotInit {
     @Autowired
     private TelegramBot bot;
 
