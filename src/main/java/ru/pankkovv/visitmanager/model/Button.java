@@ -25,13 +25,13 @@ public class Button {
         helpButton.setText(ButtonMessage.HELP.label);
         helpButton.setCallbackData(ButtonData.HELP_BTN.label);
 
-        InlineKeyboardButton regButton = new InlineKeyboardButton();
-        regButton.setText(ButtonMessage.REGISTRATION.label);
-        regButton.setCallbackData(ButtonData.REGISTRATION_BTN.label);
+        InlineKeyboardButton aboutMeButton = new InlineKeyboardButton();
+        aboutMeButton.setText(ButtonMessage.ABOUT_ME.label);
+        aboutMeButton.setCallbackData(ButtonData.ABOUT_ME_BTN.label);
 
         rowInLineOne.add(startButton);
         rowInLineTwo.add(helpButton);
-        rowInLineThree.add(regButton);
+        rowInLineThree.add(aboutMeButton);
 
         rowsInLine.add(rowInLineOne);
         rowsInLine.add(rowInLineTwo);

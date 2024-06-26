@@ -3,7 +3,7 @@ package ru.pankkovv.visitmanager.message;
 public enum ButtonData {
     START_BTN("start_btn"),
     HELP_BTN("help_btn"),
-    REGISTRATION_BTN("registration_btn");
+    ABOUT_ME_BTN("about_me_btn");
 
     public final String label;
 

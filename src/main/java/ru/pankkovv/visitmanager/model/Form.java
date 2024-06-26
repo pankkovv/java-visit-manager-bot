@@ -6,19 +6,30 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.io.File;
 
 @Entity
-@Table(name = "users")
+@Table(name = "form")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User {
+public class Form {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String username;
     private String description;
     private String photo;
+
+    @Override
+    public String toString() {
+        return "id: " + id + "\n" +
+                "Никнейм: " + username + '\n' +
+                "О себе: " + description + '\n' +
+                "photo: " + photo + '\n';
+    }
+
+    public String toStringDto(){
+        return description;
+    }
 }
