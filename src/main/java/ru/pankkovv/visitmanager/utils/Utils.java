@@ -8,10 +8,12 @@ public class Utils {
         if (update.hasCallbackQuery()) {
             return (update.getCallbackQuery().getFrom().getUserName() != null) ?
                     update.getCallbackQuery().getFrom().getUserName() :
-                    String.format("%s %s", update.getCallbackQuery().getFrom().getLastName(), update.getCallbackQuery().getFrom().getFirstName());
+                    String.format("%s %s", update.getCallbackQuery().getFrom().getLastName(),
+                            update.getCallbackQuery().getFrom().getFirstName());
         } else {
             return (update.getMessage().getFrom().getUserName() != null) ? update.getMessage().getFrom().getUserName() :
-                    String.format("%s %s", update.getMessage().getFrom().getLastName(), update.getMessage().getFrom().getFirstName());
+                    String.format("%s %s", update.getMessage().getFrom().getLastName(),
+                            update.getMessage().getFrom().getFirstName());
         }
     }
 

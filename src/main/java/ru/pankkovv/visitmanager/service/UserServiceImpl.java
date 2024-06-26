@@ -4,10 +4,20 @@ import org.springframework.stereotype.Service;
 import ru.pankkovv.visitmanager.model.User;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     @Override
-    public User create(String username) {
+    public User create(User user) {
         return null;
+    }
+
+    @Override
+    public User update(User user) {
+        return null;
+    }
+
+    @Override
+    public void delete(Long id) {
+
     }
 
     @Override
