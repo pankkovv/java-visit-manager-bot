@@ -11,6 +11,5 @@ public interface ProfileService {
 
     void deleteById(Long id);
 
-
-    boolean containsForm(String userName);
+    boolean containsProfile(String userName);
 }

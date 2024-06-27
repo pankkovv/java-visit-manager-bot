@@ -33,7 +33,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public boolean containsForm(String userName) {
+    public boolean containsProfile(String userName) {
         return repository.existsByUsername(userName);
     }
 }

@@ -38,7 +38,7 @@ public class BotService {
                 break;
 
             case "help":
-                if (profileService.containsForm(userName)) {
+                if (profileService.containsProfile(userName)) {
                     sendPhoto.setCaption(CommandMessage.HELP_ADMIN.label);
                 } else {
                     sendPhoto.setCaption(CommandMessage.HELP_COMMON.label);
@@ -204,7 +204,7 @@ public class BotService {
                 break;
 
             case "help_btn":
-                if (profileService.containsForm(userName)) {
+                if (profileService.containsProfile(userName)) {
                     sendPhoto.setCaption(CommandMessage.HELP_ADMIN.label);
                 } else {
                     sendPhoto.setCaption(CommandMessage.HELP_COMMON.label);
@@ -217,7 +217,7 @@ public class BotService {
                 break;
 
             case "about_me_btn":
-                if (profileService.containsForm(userName)) {
+                if (profileService.containsProfile(userName)) {
                     sendPhoto.setCaption(profileService.getByUsername(userName).toString());
                     sendPhoto.setPhoto(new InputFile(new File(profileService.getByUsername(userName).getPathFile())));
                 } else {
