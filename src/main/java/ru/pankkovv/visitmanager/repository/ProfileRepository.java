@@ -2,10 +2,11 @@ package ru.pankkovv.visitmanager.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ru.pankkovv.visitmanager.model.Form;
+import ru.pankkovv.visitmanager.model.Profile;
 
 @Repository
-public interface FormRepository extends JpaRepository<Form, Long> {
-    Form getFormByUsername(String username);
+public interface ProfileRepository extends JpaRepository<Profile, Long> {
+    Profile getFormByUsername(String username);
+    void deleteById(Long id);
     boolean existsByUsername(String username);
 }

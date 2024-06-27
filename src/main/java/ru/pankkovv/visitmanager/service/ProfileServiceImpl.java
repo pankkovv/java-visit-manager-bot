@@ -3,23 +3,23 @@ package ru.pankkovv.visitmanager.service;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.pankkovv.visitmanager.model.Form;
-import ru.pankkovv.visitmanager.repository.FormRepository;
+import ru.pankkovv.visitmanager.model.Profile;
+import ru.pankkovv.visitmanager.repository.ProfileRepository;
 
 @Service
 @AllArgsConstructor
-public class FormServiceImpl implements FormService {
+public class ProfileServiceImpl implements ProfileService {
     @Autowired
-    private final FormRepository repository;
+    private final ProfileRepository repository;
 
     @Override
-    public Form create(Form form) {
-        return repository.save(form);
+    public Profile create(Profile profile) {
+        return repository.save(profile);
     }
 
     @Override
-    public Form update(Form form) {
-        return repository.save(form);
+    public Profile update(Profile profile) {
+        return repository.save(profile);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class FormServiceImpl implements FormService {
     }
 
     @Override
-    public Form getByUsername(String username) {
+    public Profile getByUsername(String username) {
         return repository.getFormByUsername(username);
     }
 

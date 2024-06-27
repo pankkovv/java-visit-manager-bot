@@ -10,26 +10,26 @@ import ru.pankkovv.visitmanager.message.ButtonData;
 import ru.pankkovv.visitmanager.message.CommandMessage;
 import ru.pankkovv.visitmanager.message.ExceptionMessage;
 import ru.pankkovv.visitmanager.model.Button;
-import ru.pankkovv.visitmanager.model.Form;
+import ru.pankkovv.visitmanager.model.Profile;
+import ru.pankkovv.visitmanager.utils.Utils;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 @Service
 @AllArgsConstructor
 public class BotService {
 
     @Autowired
-    private final FormService formService;
+    private final ProfileService profileService;
 
     public Object parseCommand(Long chatId, String userName, String text) {
         SendPhoto sendPhoto = new SendPhoto();
-
-        String[] parameters = text
-                .replaceAll("/", "")
-                .split("&");
+        String[] parameters = Utils.getParameters(text);
 
         switch (parameters[0]) {
-//            Базовые команды
             case "start":
                 sendPhoto.setChatId(String.valueOf(chatId));
                 sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
@@ -38,62 +38,69 @@ public class BotService {
                 break;
 
             case "help":
-                sendPhoto.setChatId(String.valueOf(chatId));
-                sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
-
-                if (formService.containsForm(userName)) {
+                if (profileService.containsForm(userName)) {
                     sendPhoto.setCaption(CommandMessage.HELP_ADMIN.label);
-                    sendPhoto.setReplyMarkup(Button.getStartButton());
                 } else {
                     sendPhoto.setCaption(CommandMessage.HELP_COMMON.label);
-                    sendPhoto.setReplyMarkup(Button.getStartButton());
                 }
 
-                break;
-
-//                Анкета (раздел о себе)
-            case "создать-анкету":
                 sendPhoto.setChatId(String.valueOf(chatId));
                 sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 sendPhoto.setReplyMarkup(Button.getStartButton());
 
-                if (parameters.length >= 2) {
-                    Form newForm = Form.builder()
+                break;
+
+            case "создать-анкету":
+                if (parameters.length == 2) {
+                    Profile newProfile = Profile.builder()
                             .username(userName)
                             .description(parameters[1])
                             .build();
 
-                    sendPhoto.setCaption(formService.create(newForm).toString());
+                    sendPhoto.setCaption(profileService.create(newProfile).toString());
                 } else {
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                 }
+
+                sendPhoto.setChatId(String.valueOf(chatId));
+                sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                sendPhoto.setReplyMarkup(Button.getStartButton());
 
                 break;
 
             case "редактировать-анкету":
-                sendPhoto.setChatId(String.valueOf(chatId));
-                sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
-                sendPhoto.setReplyMarkup(Button.getStartButton());
+                if (parameters.length == 2) {
+                    Profile updateProfile = profileService.getByUsername(userName);
 
-                if (parameters.length >= 2) {
-                    Form updateForm = formService.getByUsername(userName);
+                    updateProfile.setDescription(parameters[1]);
 
-                    updateForm.setDescription(parameters[1]);
-
-                    sendPhoto.setCaption(formService.update(updateForm).toString());
+                    sendPhoto.setCaption(profileService.update(updateProfile).toString());
                 } else {
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                 }
 
+                sendPhoto.setChatId(String.valueOf(chatId));
+                sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                sendPhoto.setReplyMarkup(Button.getStartButton());
+
                 break;
 
             case "удалить-анкету":
-                formService.deleteById(Long.parseLong(parameters[1]));
+                try {
+                    Profile oldProfile = profileService.getByUsername(userName);
 
-                sendPhoto.setChatId(String.valueOf(chatId));
-                sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
-                sendPhoto.setCaption(CommandMessage.DELETE_FORM_COMMAND.label);
-                sendPhoto.setReplyMarkup(Button.getStartButton());
+                    profileService.deleteById(oldProfile.getId());
+                    Files.deleteIfExists(Path.of(oldProfile.getPathFile()));
+
+                    sendPhoto.setChatId(String.valueOf(chatId));
+                    sendPhoto.setReplyMarkup(Button.getStartButton());
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                    sendPhoto.setCaption(CommandMessage.DELETE_FORM_COMMAND.label);
+
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
                 break;
 
 //                Прайслист (полка с товарами)
@@ -123,33 +130,62 @@ public class BotService {
 
     public Object parseCommand(Long chatId, String userName, String text, File photo) {
         SendPhoto sendPhoto = new SendPhoto();
-
-        String[] parameters = text
-                .replaceAll("/", "")
-                .split("&");
+        String[] parameters = Utils.getParameters(text);
 
         switch (parameters[0]) {
-//                Анкета (раздел о себе)
             case "создать-анкету":
+                Profile newProfile;
+
+                if (parameters.length == 2) {
+                    newProfile = Profile.builder()
+                            .username(userName)
+                            .description(parameters[1])
+                            .pathFile(photo.getPath())
+                            .build();
+
+                } else {
+                    newProfile = Profile.builder()
+                            .username(userName)
+                            .pathFile(photo.getPath())
+                            .build();
+
+                }
+
+                sendPhoto.setChatId(String.valueOf(chatId));
+                sendPhoto.setCaption(profileService.create(newProfile).toString());
+                sendPhoto.setPhoto(new InputFile(new File(newProfile.getPathFile())));
+                sendPhoto.setReplyMarkup(Button.getStartButton());
+
                 break;
 
             case "редактировать-анкету":
+                Profile updateProfile = profileService.getByUsername(userName);
+
+                if (parameters.length == 2) {
+                    updateProfile.setDescription(parameters[1]);
+                    updateProfile.setPathFile(photo.getPath());
+                } else {
+                    updateProfile.setPathFile(photo.getPath());
+                }
+
+                sendPhoto.setChatId(String.valueOf(chatId));
+                sendPhoto.setCaption(profileService.update(updateProfile).toString());
+                sendPhoto.setPhoto(new InputFile(new File(updateProfile.getPathFile())));
+                sendPhoto.setReplyMarkup(Button.getStartButton());
+
                 break;
 
-//                Прайслист (полка с товарами)
             case "создать-товар":
                 break;
 
             case "редактировать-товар":
                 break;
 
-//                Обратная связь (отзывы)
             case "создать-отзыв":
                 break;
 
             case "редактировать-отзыв":
                 break;
-
         }
 
         return sendPhoto;
@@ -157,7 +193,6 @@ public class BotService {
 
     public Object parseCommand(Long chatId, String userName, CallbackQuery cbq) {
         SendPhoto sendPhoto = new SendPhoto();
-
         String button = ButtonData.valueOf(cbq.getData().toUpperCase()).label;
 
         switch (button) {
@@ -169,32 +204,34 @@ public class BotService {
                 break;
 
             case "help_btn":
-                sendPhoto.setChatId(String.valueOf(chatId));
-                sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
-
-                if (formService.containsForm(userName)) {
+                if (profileService.containsForm(userName)) {
                     sendPhoto.setCaption(CommandMessage.HELP_ADMIN.label);
-                    sendPhoto.setReplyMarkup(Button.getStartButton());
                 } else {
                     sendPhoto.setCaption(CommandMessage.HELP_COMMON.label);
-                    sendPhoto.setReplyMarkup(Button.getStartButton());
                 }
+
+                sendPhoto.setChatId(String.valueOf(chatId));
+                sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                sendPhoto.setReplyMarkup(Button.getStartButton());
 
                 break;
 
             case "about_me_btn":
-                sendPhoto.setChatId(String.valueOf(chatId));
-                sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
-                if(formService.containsForm(userName)){
-                    sendPhoto.setCaption(formService.getByUsername(userName).toString());
+                if (profileService.containsForm(userName)) {
+                    sendPhoto.setCaption(profileService.getByUsername(userName).toString());
+                    sendPhoto.setPhoto(new InputFile(new File(profileService.getByUsername(userName).getPathFile())));
                 } else {
-                    sendPhoto.setCaption(formService.getByUsername(userName).toStringDto());
+                    sendPhoto.setCaption(profileService.getByUsername(userName).toStringDto());
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
+
+                sendPhoto.setChatId(String.valueOf(chatId));
                 sendPhoto.setReplyMarkup(Button.getStartButton());
+
                 break;
         }
 
-        return  sendPhoto;
+        return sendPhoto;
     }
 
 

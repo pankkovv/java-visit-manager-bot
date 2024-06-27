@@ -25,13 +25,8 @@ public class Utils {
         }
     }
 
-    public static String getText(Message msg) {
-        if (msg.getText() != null) {
-            return msg.getText();
-        } else if (msg.getCaption() != null) {
-            return msg.getCaption();
-        } else {
-            return "";
-        }
+    public static String[] getParameters(String text) {
+        return text.replaceAll("/", "")
+                .split("&");
     }
 }

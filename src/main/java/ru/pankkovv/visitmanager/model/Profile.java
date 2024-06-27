@@ -8,25 +8,24 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "form")
+@Table(name = "profile")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Form {
+public class Profile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     private String username;
     private String description;
-    private String photo;
-
+    private String pathFile;
     @Override
     public String toString() {
         return "id: " + id + "\n" +
                 "Никнейм: " + username + '\n' +
                 "О себе: " + description + '\n' +
-                "photo: " + photo + '\n';
+                "Путь до фото: " + pathFile;
     }
 
     public String toStringDto(){
