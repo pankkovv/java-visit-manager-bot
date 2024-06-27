@@ -5,10 +5,12 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
-import org.telegram.telegrambots.meta.api.objects.*;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.PhotoSize;
+import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.pankkovv.visitmanager.config.BotConfig;
-import ru.pankkovv.visitmanager.message.CommandMessage;
 import ru.pankkovv.visitmanager.message.ExceptionMessage;
 import ru.pankkovv.visitmanager.service.BotService;
 import ru.pankkovv.visitmanager.utils.Utils;
@@ -43,20 +45,21 @@ public class TelegramBot extends TelegramLongPollingBot {
         Message msg = update.getMessage();
         String userName = Utils.getUserName(update);
         Long chatId = Utils.getChatId(update);
+        Object answer;
 
         try {
-            Object answer = new Object();
 
             if (cbq != null) {
                 answer = service.parseCommand(chatId, userName, cbq);
+
             } else if (msg.getPhoto() != null) {
                 List<PhotoSize> photos = msg.getPhoto();
                 GetFile getFile = new GetFile(photos.get(photos.size() - 1).getFileId());
                 org.telegram.telegrambots.meta.api.objects.File file = execute(getFile);
-                File photo = new File("");
                 String[] par = Utils.getParameters(msg.getCaption());
+                File photo = new File("");
 
-                switch (par[0]){
+                switch (par[0]) {
                     case "создать-анкету":
                     case "редактировать-анкету":
                         photo = downloadFile(file, new File("download/profile" + new Random().nextInt() + ".jpg"));
@@ -74,13 +77,21 @@ public class TelegramBot extends TelegramLongPollingBot {
                 }
 
                 answer = service.parseCommand(chatId, userName, msg.getCaption(), photo);
+
             } else if (msg.getText() != null) {
                 answer = service.parseCommand(chatId, userName, msg.getText());
+
+            } else {
+                answer = new SendMessage();
+                ((SendMessage) answer).setChatId(String.valueOf(chatId));
+                ((SendMessage) answer).setText(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
+                ((SendMessage) answer).setReplyMarkup(Button.getStartButton());
+
             }
 
             if (answer.getClass().equals(SendPhoto.class)) {
                 execute((SendPhoto) answer);
-            } else if (answer.getClass().equals(SendMessage.class)){
+            } else if (answer.getClass().equals(SendMessage.class)) {
                 execute((SendMessage) answer);
             }
 
