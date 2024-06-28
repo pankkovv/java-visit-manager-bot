@@ -6,10 +6,13 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
-import ru.pankkovv.visitmanager.profile.message.ButtonData;
-import ru.pankkovv.visitmanager.profile.message.CommandMessage;
-import ru.pankkovv.visitmanager.profile.message.ExceptionMessage;
+
+import ru.pankkovv.visitmanager.bot.message.ButtonData;
+import ru.pankkovv.visitmanager.bot.message.CommandMessage;
+import ru.pankkovv.visitmanager.bot.message.ExceptionMessage;
+import ru.pankkovv.visitmanager.bot.model.Button;
 import ru.pankkovv.visitmanager.profile.model.Profile;
+import ru.pankkovv.visitmanager.profile.service.ProfileService;
 import ru.pankkovv.visitmanager.utils.Utils;
 
 import java.io.File;
