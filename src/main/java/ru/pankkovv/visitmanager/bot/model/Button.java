@@ -1,9 +1,9 @@
-package ru.pankkovv.visitmanager.model;
+package ru.pankkovv.visitmanager.bot.model;
 
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import ru.pankkovv.visitmanager.message.ButtonData;
-import ru.pankkovv.visitmanager.message.ButtonMessage;
+import ru.pankkovv.visitmanager.product.message.ButtonData;
+import ru.pankkovv.visitmanager.product.message.ButtonMessage;
 
 import java.util.ArrayList;
 import java.util.List;

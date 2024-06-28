@@ -1,10 +1,10 @@
-package ru.pankkovv.visitmanager.service;
+package ru.pankkovv.visitmanager.profile.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.pankkovv.visitmanager.model.Profile;
-import ru.pankkovv.visitmanager.repository.ProfileRepository;
+import ru.pankkovv.visitmanager.profile.model.Profile;
+import ru.pankkovv.visitmanager.profile.repository.ProfileRepository;
 
 @Service
 @AllArgsConstructor

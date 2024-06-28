@@ -1,8 +1,8 @@
-package ru.pankkovv.visitmanager.repository;
+package ru.pankkovv.visitmanager.profile.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ru.pankkovv.visitmanager.model.Profile;
+import ru.pankkovv.visitmanager.profile.model.Profile;
 
 @Repository
 public interface ProfileRepository extends JpaRepository<Profile, Long> {

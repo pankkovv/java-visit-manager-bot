@@ -1,4 +1,4 @@
-package ru.pankkovv.visitmanager.service;
+package ru.pankkovv.visitmanager.bot.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,11 +6,10 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
-import ru.pankkovv.visitmanager.message.ButtonData;
-import ru.pankkovv.visitmanager.message.CommandMessage;
-import ru.pankkovv.visitmanager.message.ExceptionMessage;
-import ru.pankkovv.visitmanager.model.Button;
-import ru.pankkovv.visitmanager.model.Profile;
+import ru.pankkovv.visitmanager.profile.message.ButtonData;
+import ru.pankkovv.visitmanager.profile.message.CommandMessage;
+import ru.pankkovv.visitmanager.profile.message.ExceptionMessage;
+import ru.pankkovv.visitmanager.profile.model.Profile;
 import ru.pankkovv.visitmanager.utils.Utils;
 
 import java.io.File;

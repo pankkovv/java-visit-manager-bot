@@ -1,4 +1,4 @@
-package ru.pankkovv.visitmanager.message;
+package ru.pankkovv.visitmanager.bot.message;
 
 public enum ButtonMessage {
     START("Главное меню \uD83D\uDC8C"),

@@ -1,4 +1,4 @@
-package ru.pankkovv.visitmanager.model;
+package ru.pankkovv.visitmanager.profile.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

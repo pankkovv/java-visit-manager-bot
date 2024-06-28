@@ -1,6 +1,6 @@
-package ru.pankkovv.visitmanager.service;
+package ru.pankkovv.visitmanager.profile.service;
 
-import ru.pankkovv.visitmanager.model.Profile;
+import ru.pankkovv.visitmanager.profile.model.Profile;
 
 public interface ProfileService {
     Profile create(Profile profile);

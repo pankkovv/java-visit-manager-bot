@@ -1,4 +1,4 @@
-package ru.pankkovv.visitmanager.model;
+package ru.pankkovv.visitmanager.bot.model;
 
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -10,9 +10,9 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.pankkovv.visitmanager.config.BotConfig;
-import ru.pankkovv.visitmanager.message.ExceptionMessage;
-import ru.pankkovv.visitmanager.service.BotService;
+import ru.pankkovv.visitmanager.bot.config.BotConfig;
+import ru.pankkovv.visitmanager.bot.message.ExceptionMessage;
+import ru.pankkovv.visitmanager.bot.service.BotService;
 import ru.pankkovv.visitmanager.utils.Utils;
 
 import java.io.File;

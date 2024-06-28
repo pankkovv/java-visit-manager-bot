@@ -1,4 +1,4 @@
-package ru.pankkovv.visitmanager.message;
+package ru.pankkovv.visitmanager.bot.message;
 
 public enum ButtonData {
     START_BTN("start_btn"),
