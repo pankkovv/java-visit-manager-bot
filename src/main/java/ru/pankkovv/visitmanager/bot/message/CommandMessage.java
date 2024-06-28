@@ -1,4 +1,4 @@
-package ru.pankkovv.visitmanager.message;
+package ru.pankkovv.visitmanager.bot.message;
 
 public enum CommandMessage {
     START("Давайте начнём\n\n" +
@@ -12,7 +12,7 @@ public enum CommandMessage {
             "или же предложения и комментарии, вы можете нам написать:\n" +
             "@pankkovv - создатель и администратор бота\n" +
             "@eee_kisel - заказчик бота\n"),
-    REGISTRATION("Для регистрации необходимо ввести код-пароль");
+    DELETE_FORM_COMMAND("Ваши данные успешно удалены");
 
     public final String label;
 

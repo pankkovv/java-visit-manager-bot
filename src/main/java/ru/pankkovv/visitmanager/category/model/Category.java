@@ -1,4 +1,4 @@
-package ru.pankkovv.visitmanager.model;
+package ru.pankkovv.visitmanager.category.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,19 +6,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.io.File;
 
 @Entity
-@Table(name = "users")
+@Table(name = "category")
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class User {
+public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-    private String username;
-    private String description;
-    private String photo;
+    Long id;
+    String name;
 }

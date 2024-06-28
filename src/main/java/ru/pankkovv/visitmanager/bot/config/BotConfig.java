@@ -1,4 +1,4 @@
-package ru.pankkovv.visitmanager.config;
+package ru.pankkovv.visitmanager.bot.config;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;

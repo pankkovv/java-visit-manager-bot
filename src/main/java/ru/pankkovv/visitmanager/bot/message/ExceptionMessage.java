@@ -1,4 +1,4 @@
-package ru.pankkovv.visitmanager.message;
+package ru.pankkovv.visitmanager.bot.message;
 
 public enum ExceptionMessage {
     NOT_FOUND_COMMAND_EXCEPTION("Простите, я не понимаю Вас. Похоже, что Вы ввели сообщение, не соответствующее формату."),
