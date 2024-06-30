@@ -4,13 +4,17 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
-
+import ru.pankkovv.visitmanager.bot.mapper.ProductMapper;
 import ru.pankkovv.visitmanager.bot.message.ButtonData;
 import ru.pankkovv.visitmanager.bot.message.CommandMessage;
 import ru.pankkovv.visitmanager.bot.message.ExceptionMessage;
 import ru.pankkovv.visitmanager.bot.model.Button;
+import ru.pankkovv.visitmanager.product.model.Product;
+import ru.pankkovv.visitmanager.product.model.Type;
+import ru.pankkovv.visitmanager.product.service.ProductService;
 import ru.pankkovv.visitmanager.profile.model.Profile;
 import ru.pankkovv.visitmanager.profile.service.ProfileService;
 import ru.pankkovv.visitmanager.utils.Utils;
@@ -20,12 +24,20 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static ru.pankkovv.visitmanager.utils.Utils.pagination;
+
 @Service
 @AllArgsConstructor
 public class BotService {
 
     @Autowired
     private final ProfileService profileService;
+
+    @Autowired
+    private final ProductService productService;
+
+    @Autowired
+    private final ProductMapper productMapper;
 
     public Object parseCommand(Long chatId, String userName, String text) {
         SendPhoto sendPhoto = new SendPhoto();
@@ -59,13 +71,14 @@ public class BotService {
                             .description(parameters[1])
                             .build();
 
+                    sendPhoto.setChatId(String.valueOf(chatId));
                     sendPhoto.setCaption(profileService.create(newProfile).toString());
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 } else {
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
 
-                sendPhoto.setChatId(String.valueOf(chatId));
-                sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 sendPhoto.setReplyMarkup(Button.getStartButton());
 
                 break;
@@ -100,13 +113,27 @@ public class BotService {
                     sendPhoto.setCaption(CommandMessage.DELETE_FORM_COMMAND.label);
 
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
 
                 break;
 
 //                Прайслист (полка с товарами)
             case "создать-товар":
+                try {
+                    Product product = productMapper.mapToProduct(text, userName);
+
+                    sendPhoto.setCaption(productService.create(product).toString());
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                } catch (RuntimeException e) {
+                    sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                }
+
+                sendPhoto.setChatId(String.valueOf(chatId));
+                sendPhoto.setReplyMarkup(Button.getStartButton());
+
                 break;
 
             case "редактировать-товар":
@@ -178,6 +205,18 @@ public class BotService {
                 break;
 
             case "создать-товар":
+                try {
+                    Product product = productMapper.mapToProduct(text, userName, photo.getPath());
+
+                    sendPhoto.setCaption(productService.create(product).toString());
+                    sendPhoto.setPhoto(new InputFile(new File(product.getPathFile())));
+                } catch (RuntimeException e) {
+                    sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                }
+
+                sendPhoto.setChatId(String.valueOf(chatId));
+                sendPhoto.setReplyMarkup(Button.getStartButton());
                 break;
 
             case "редактировать-товар":
@@ -231,10 +270,105 @@ public class BotService {
                 sendPhoto.setReplyMarkup(Button.getStartButton());
 
                 break;
+
+            case "view_products_btn":
+                sendPhoto = pagedProduct(chatId, userName, 0);
+                break;
+
+            //Пагинация
+            case "next":
+                if (pagination < 3) {
+                    ++pagination;
+                    EditMessageReplyMarkup editMessageReplyMarkup = new EditMessageReplyMarkup();
+                    editMessageReplyMarkup.setMessageId(cbq.getMessage().getMessageId());
+                    editMessageReplyMarkup.setChatId(String.valueOf(chatId));
+                    editMessageReplyMarkup.setReplyMarkup(Button.getNumberButton(String.valueOf(pagination)));
+                    return editMessageReplyMarkup;
+                }
+                break;
+
+
+            case "prev":
+                EditMessageReplyMarkup editMessageReplyMarkupPrev = new EditMessageReplyMarkup();
+                editMessageReplyMarkupPrev.setMessageId(cbq.getMessage().getMessageId());
+                editMessageReplyMarkupPrev.setChatId(String.valueOf(chatId));
+
+                if (pagination <= 1 || pagination == 0) {
+                    editMessageReplyMarkupPrev.setReplyMarkup(Button.getNumberButton(""));
+                    return editMessageReplyMarkupPrev;
+                } else if (pagination > 1) {
+                    --pagination;
+                    editMessageReplyMarkupPrev.setReplyMarkup(Button.getNumberButton(String.valueOf(pagination)));
+                    return editMessageReplyMarkupPrev;
+                }
+
+                break;
+
+            case "one":
+                sendPhoto = pagedProduct(chatId, userName, 0);
+                break;
+
+            case "two":
+                sendPhoto = pagedProduct(chatId, userName, 1);
+                break;
+
+            case "three":
+                sendPhoto = pagedProduct(chatId, userName, 2);
+                break;
+
+            case "four":
+                sendPhoto = pagedProduct(chatId, userName, 3);
+                break;
+
+            case "five":
+                sendPhoto = pagedProduct(chatId, userName, 4);
+                break;
+
+            case "six":
+                sendPhoto = pagedProduct(chatId, userName, 5);
+                break;
+
+            case "seven":
+                sendPhoto = pagedProduct(chatId, userName, 6);
+                break;
+
         }
 
         return sendPhoto;
     }
 
+    private SendPhoto pagedProduct(Long chatId, String userName, int from) {
+        SendPhoto sendPhoto = new SendPhoto();
+        Product product;
+
+        if (pagination > 0) {
+            Integer value = Integer.valueOf(String.valueOf(pagination) + from);
+            product = productService.getByType(Type.ORDER, Utils.paged(value, 1)).get(0);
+        } else {
+            product = productService.getByType(Type.ORDER, Utils.paged(from, 1)).get(0);
+        }
+
+        if (profileService.containsProfile(userName)) {
+            sendPhoto.setCaption(product.toString());
+        } else {
+            sendPhoto.setCaption(product.toStringDto());
+        }
+
+        if (product.getPathFile() != null) {
+            sendPhoto.setPhoto(new InputFile(new File(product.getPathFile())));
+        } else {
+            sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+        }
+
+        sendPhoto.setChatId(String.valueOf(chatId));
+
+        if (pagination == 0) {
+            sendPhoto.setReplyMarkup(Button.getNumberButton(""));
+        } else {
+            sendPhoto.setReplyMarkup(Button.getNumberButton(String.valueOf(pagination)));
+        }
+
+        return sendPhoto;
+    }
 
 }

@@ -21,10 +21,32 @@ public class Product {
     Long id;
     String name;
     String description;
+    Long price;
     @OneToOne
     @JoinColumn(name = "category_id")
     Category category;
+    @Enumerated(EnumType.STRING)
+    Type type;
     @ManyToOne
     @JoinColumn(name = "profile_id")
     Profile owner;
+    String pathFile;
+
+    @Override
+    public String toString() {
+        return "id: " + id + "\n" +
+                "Название товара: " + name + "\n" +
+                "Описание: " + description + "\n" +
+                "Цена: " + price + "\n" +
+                "Категория: " + category.getName() + "\n" +
+                "Тип: " + type.label + "\n" +
+                "Путь до фото: " + pathFile;
+    }
+
+    public String toStringDto() {
+        return "Название товара: " + name + "\n" +
+                "Описание: " + description + "\n" +
+                "Цена: " + price + "\n" +
+                "Категория: " + category.getName();
+    }
 }
