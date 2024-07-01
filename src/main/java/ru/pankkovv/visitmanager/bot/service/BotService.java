@@ -24,7 +24,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static ru.pankkovv.visitmanager.utils.Utils.pagination;
+import static ru.pankkovv.visitmanager.bot.model.Button.pagination;
+import static ru.pankkovv.visitmanager.bot.model.Button.sizeListProductOrder;
 
 @Service
 @AllArgsConstructor
@@ -272,19 +273,29 @@ public class BotService {
                 break;
 
             case "view_products_btn":
+                sizeListProductOrder = productService.getByType(Type.ORDER, Utils.paged(0, Integer.MAX_VALUE)).size();
                 sendPhoto = pagedProduct(chatId, userName, 0);
                 break;
 
             //Пагинация
             case "next":
-                if (pagination < 3) {
+                int count;
+
+                if (sizeListProductOrder % 7 == 0) {
+                    count = sizeListProductOrder / 7;
+                } else {
+                    count = sizeListProductOrder / 7;
+                }
+
+                if (pagination <= count) {
                     ++pagination;
                     EditMessageReplyMarkup editMessageReplyMarkup = new EditMessageReplyMarkup();
                     editMessageReplyMarkup.setMessageId(cbq.getMessage().getMessageId());
                     editMessageReplyMarkup.setChatId(String.valueOf(chatId));
-                    editMessageReplyMarkup.setReplyMarkup(Button.getNumberButton(String.valueOf(pagination)));
+                    editMessageReplyMarkup.setReplyMarkup(Button.getNumberButton(pagination * 7));
                     return editMessageReplyMarkup;
                 }
+
                 break;
 
 
@@ -293,16 +304,18 @@ public class BotService {
                 editMessageReplyMarkupPrev.setMessageId(cbq.getMessage().getMessageId());
                 editMessageReplyMarkupPrev.setChatId(String.valueOf(chatId));
 
-                if (pagination <= 1 || pagination == 0) {
-                    editMessageReplyMarkupPrev.setReplyMarkup(Button.getNumberButton(""));
-                    return editMessageReplyMarkupPrev;
-                } else if (pagination > 1) {
+                if (pagination == 2) {
                     --pagination;
-                    editMessageReplyMarkupPrev.setReplyMarkup(Button.getNumberButton(String.valueOf(pagination)));
+                    editMessageReplyMarkupPrev.setReplyMarkup(Button.getNumberButton(7));
+                    return editMessageReplyMarkupPrev;
+                } else if (pagination < 2) {
+                    editMessageReplyMarkupPrev.setReplyMarkup(Button.getNumberButton(7));
+                    return editMessageReplyMarkupPrev;
+                } else {
+                    --pagination;
+                    editMessageReplyMarkupPrev.setReplyMarkup(Button.getNumberButton(pagination * 7));
                     return editMessageReplyMarkupPrev;
                 }
-
-                break;
 
             case "one":
                 sendPhoto = pagedProduct(chatId, userName, 0);
@@ -340,32 +353,43 @@ public class BotService {
     private SendPhoto pagedProduct(Long chatId, String userName, int from) {
         SendPhoto sendPhoto = new SendPhoto();
         Product product;
-
-        if (pagination > 0) {
-            Integer value = Integer.valueOf(String.valueOf(pagination) + from);
-            product = productService.getByType(Type.ORDER, Utils.paged(value, 1)).get(0);
-        } else {
-            product = productService.getByType(Type.ORDER, Utils.paged(from, 1)).get(0);
-        }
-
-        if (profileService.containsProfile(userName)) {
-            sendPhoto.setCaption(product.toString());
-        } else {
-            sendPhoto.setCaption(product.toStringDto());
-        }
-
-        if (product.getPathFile() != null) {
-            sendPhoto.setPhoto(new InputFile(new File(product.getPathFile())));
-        } else {
-            sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
-        }
-
         sendPhoto.setChatId(String.valueOf(chatId));
 
-        if (pagination == 0) {
-            sendPhoto.setReplyMarkup(Button.getNumberButton(""));
-        } else {
-            sendPhoto.setReplyMarkup(Button.getNumberButton(String.valueOf(pagination)));
+        try {
+            if (pagination >= 2) {
+                Integer value = Integer.valueOf(String.valueOf(pagination * 7 - 7 + from));
+                product = productService.getByType(Type.ORDER, Utils.paged(value, 1)).get(0);
+            } else {
+                product = productService.getByType(Type.ORDER, Utils.paged(from, 1)).get(0);
+            }
+
+            if (profileService.containsProfile(userName)) {
+                sendPhoto.setCaption(product.toString());
+            } else {
+                sendPhoto.setCaption(product.toStringDto());
+            }
+
+            if (product.getPathFile() != null) {
+                sendPhoto.setPhoto(new InputFile(new File(product.getPathFile())));
+            } else {
+                sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+            }
+
+            if (pagination == 1) {
+                sendPhoto.setReplyMarkup(Button.getNumberButton(7));
+            } else {
+                sendPhoto.setReplyMarkup(Button.getNumberButton(pagination * 7));
+            }
+
+        } catch (IndexOutOfBoundsException e) {
+            sendPhoto.setCaption("Извините, похоже данный товар не получилось найти :(");
+            sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+
+            if (pagination == 1) {
+                sendPhoto.setReplyMarkup(Button.getNumberButton(7));
+            } else {
+                sendPhoto.setReplyMarkup(Button.getNumberButton(pagination * 7));
+            }
         }
 
         return sendPhoto;

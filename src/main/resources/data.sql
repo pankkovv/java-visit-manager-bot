@@ -38,3 +38,21 @@ VALUES (6, 'Ожерелье', 'Ожерелье для заказа', 100, 6, 1
 
 INSERT INTO product(id, name, description, price, category_id, profile_id, type, path_file)
 VALUES (7, 'Бумага', 'Бумажный мерч для заказа', 100, 7, 1, 'ORDER', 'img/start.jpg');
+
+INSERT INTO product(id, name, description, price, category_id, profile_id, type, path_file)
+VALUES (8, 'Бумагаahhggfhghfgaaaa', 'Бумажный мерч для заказа', 100, 1, 1, 'ORDER', 'img/start.jpg');
+INSERT INTO product(id, name, description, price, category_id, profile_id, type, path_file)
+VALUES (9, 'Бумагаfgfgaaaaa', 'Бумажный мерч для заказа', 100, 1, 1, 'ORDER', 'img/start.jpg');
+INSERT INTO product(id, name, description, price, category_id, profile_id, type, path_file)
+VALUES (10, 'Бумагаasadsdsaaaa', 'Бумажный мерч для заказа', 100, 1, 1, 'ORDER', 'img/start.jpg');
+INSERT INTO product(id, name, description, price, category_id, profile_id, type, path_file)
+VALUES (11, 'Бумагаafgdfgdfgdgaaaa', 'Бумажный мерч для заказа', 100, 1, 1, 'ORDER', 'img/start.jpg');
+INSERT INTO product(id, name, description, price, category_id, profile_id, type, path_file)
+VALUES (12, 'Бумагаaaasdasd', 'Бумажный мерч для заказа', 100, 1, 1, 'ORDER', 'img/start.jpg');
+INSERT INTO product(id, name, description, price, category_id, profile_id, type, path_file)
+VALUES (13, 'Бумагаaaasadasfaa', 'Бумажный мерч для заказа', 100, 1, 1, 'ORDER', 'img/start.jpg');
+INSERT INTO product(id, name, description, price, category_id, profile_id, type, path_file)
+VALUES (14, 'Бумагаasdasdasdsadaaaaa', 'Бумажный мерч для заказа', 100, 1, 1, 'ORDER', 'img/start.jpg');INSERT INTO product(id, name, description, price, category_id, profile_id, type, path_file)
+VALUES (15, 'Бумагаasdasdasdsadaaaaa', 'Бумажный мерч для заказа', 100, 1, 1, 'ORDER', 'img/start.jpg');INSERT INTO product(id, name, description, price, category_id, profile_id, type, path_file)
+VALUES (16, 'Бумагаasdasdasdsadaaaaa', 'Бумажный мерч для заказа', 100, 1, 1, 'ORDER', 'img/start.jpg');INSERT INTO product(id, name, description, price, category_id, profile_id, type, path_file)
+VALUES (17, 'Бумагаasdasdasdsadaaaaa', 'Бумажный мерч для заказа', 100, 1, 1, 'ORDER', 'img/start.jpg');

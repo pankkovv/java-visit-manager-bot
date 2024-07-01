@@ -13,7 +13,6 @@ import ru.pankkovv.visitmanager.product.model.Type;
 import java.io.File;
 
 public class Utils {
-    public static int pagination = 0;
     public static String getUserName(Update update) {
         if (update.hasCallbackQuery()) {
             return (update.getCallbackQuery().getFrom().getUserName() != null) ?

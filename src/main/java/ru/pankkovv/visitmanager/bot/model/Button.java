@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Button {
+    public static int pagination = 1;
+    public static int sizeListProductOrder = 0;
 
     public static InlineKeyboardMarkup getStartButton() {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
@@ -49,41 +51,34 @@ public class Button {
         return inlineKeyboardMarkup;
     }
 
-    public static InlineKeyboardMarkup getNumberButton(String number) {
+    public static InlineKeyboardMarkup getNumberButton(int number) {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
         List<InlineKeyboardButton> rowInLineOne = new ArrayList<>();
         List<InlineKeyboardButton> rowInLineTwo = new ArrayList<>();
         List<InlineKeyboardButton> rowInLineThree = new ArrayList<>();
+        int i = number - 6;
 
         InlineKeyboardButton oneButton = new InlineKeyboardButton();
-        oneButton.setText(number + 1);
         oneButton.setCallbackData(ButtonData.ONE.label);
 
         InlineKeyboardButton twoButton = new InlineKeyboardButton();
-        twoButton.setText(number + 2);
         twoButton.setCallbackData(ButtonData.TWO.label);
 
         InlineKeyboardButton threeButton = new InlineKeyboardButton();
-        threeButton.setText(number + 3);
         threeButton.setCallbackData(ButtonData.THREE.label);
 
         InlineKeyboardButton fourButton = new InlineKeyboardButton();
-        fourButton.setText(number + 4);
         fourButton.setCallbackData(ButtonData.FOUR.label);
 
         InlineKeyboardButton fiveButton = new InlineKeyboardButton();
-        fiveButton.setText(number + 5);
         fiveButton.setCallbackData(ButtonData.FIVE.label);
 
         InlineKeyboardButton sixButton = new InlineKeyboardButton();
-        sixButton.setText(number + 6);
         sixButton.setCallbackData(ButtonData.SIX.label);
 
         InlineKeyboardButton sevenButton = new InlineKeyboardButton();
-        sevenButton.setText(number + 7);
         sevenButton.setCallbackData(ButtonData.SEVEN.label);
-
 
         InlineKeyboardButton nextButton = new InlineKeyboardButton();
         nextButton.setText(">>");
@@ -96,6 +91,29 @@ public class Button {
         InlineKeyboardButton startButton = new InlineKeyboardButton();
         startButton.setText(ButtonMessage.START.label);
         startButton.setCallbackData(ButtonData.START_BTN.label);
+
+        while(i < number){
+            oneButton.setText(String.valueOf(i));
+            ++i;
+
+            twoButton.setText(String.valueOf(i));
+            ++i;
+
+            threeButton.setText(String.valueOf(i));
+            ++i;
+
+            fourButton.setText(String.valueOf(i));
+            ++i;
+
+            fiveButton.setText(String.valueOf(i));
+            ++i;
+
+            sixButton.setText(String.valueOf(i));
+            ++i;
+
+            sevenButton.setText(String.valueOf(i));
+            ++i;
+        }
 
         rowInLineOne.add(oneButton);
         rowInLineOne.add(twoButton);
