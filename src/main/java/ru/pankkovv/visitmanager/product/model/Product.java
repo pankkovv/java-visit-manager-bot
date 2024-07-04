@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.PackagePrivate;
 import ru.pankkovv.visitmanager.category.model.Category;
 import ru.pankkovv.visitmanager.profile.model.Profile;
 
