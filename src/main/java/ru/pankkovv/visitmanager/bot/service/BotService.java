@@ -183,7 +183,7 @@ public class BotService {
             case "удалить-товар":
                 try {
                     Long id = Long.parseLong(parameters[1]);
-                    Product product = productService.getById(id);
+                    productService.getById(id);
                     productService.delete(id);
 
                     sendPhoto.setCaption("Товар успешно удален!");
@@ -273,6 +273,7 @@ public class BotService {
 
                 sendPhoto.setChatId(String.valueOf(chatId));
                 sendPhoto.setReplyMarkup(Button.getStartButton());
+
                 break;
 
             case "редактировать-товар":
@@ -314,6 +315,7 @@ public class BotService {
 
                 sendPhoto.setChatId(String.valueOf(chatId));
                 sendPhoto.setReplyMarkup(Button.getStartButton());
+
                 break;
 
             case "создать-отзыв":
@@ -369,7 +371,7 @@ public class BotService {
             case "back":
                 sendPhoto.setChatId(String.valueOf(chatId));
                 sendPhoto.setCaption("Я помогу вам сделать выбор при оформлении заказа.\n" +
-                        "Можно нажать \"прайслист\" и вы увидите, описание работ, выполняемых на индивидуальных условиях \n" +
+                        "Можно нажать \"Прайслист\" и вы увидите, описание работ, выполняемых на индивидуальных условиях \n" +
                         "Кнопка \"Товары в наличии\" покажет, какие уже готовые работы вы можете заказать прямо сейчас");
                 sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 sendPhoto.setReplyMarkup(Button.getProductButton());
@@ -385,6 +387,9 @@ public class BotService {
             //Пагинация
             case "next_order":
                 int countOrder = sizeListProductOrder / 7;
+                EditMessageReplyMarkup editMessageReplyMarkupOrder = new EditMessageReplyMarkup();
+                editMessageReplyMarkupOrder.setMessageId(cbq.getMessage().getMessageId());
+                editMessageReplyMarkupOrder.setChatId(String.valueOf(chatId));
 
                 if (paginationOrder == countOrder) {
 
@@ -392,23 +397,15 @@ public class BotService {
                         ++paginationOrder;
                     }
 
-                    EditMessageReplyMarkup editMessageReplyMarkupOrder = new EditMessageReplyMarkup();
-                    editMessageReplyMarkupOrder.setMessageId(cbq.getMessage().getMessageId());
-                    editMessageReplyMarkupOrder.setChatId(String.valueOf(chatId));
                     editMessageReplyMarkupOrder.setReplyMarkup(Button.getNumberOrderButton(paginationOrder * 7));
-                    return editMessageReplyMarkupOrder;
-                }
-
-                if (paginationOrder < countOrder) {
+                } else if (paginationOrder < countOrder) {
                     ++paginationOrder;
-                    EditMessageReplyMarkup editMessageReplyMarkupOrder = new EditMessageReplyMarkup();
-                    editMessageReplyMarkupOrder.setMessageId(cbq.getMessage().getMessageId());
-                    editMessageReplyMarkupOrder.setChatId(String.valueOf(chatId));
                     editMessageReplyMarkupOrder.setReplyMarkup(Button.getNumberOrderButton(paginationOrder * 7));
-                    return editMessageReplyMarkupOrder;
+                } else {
+                    editMessageReplyMarkupOrder.setReplyMarkup(cbq.getMessage().getReplyMarkup());
                 }
 
-                break;
+                return editMessageReplyMarkupOrder;
 
             case "prev_order":
                 EditMessageReplyMarkup editMessageReplyMarkupPrevOrder = new EditMessageReplyMarkup();
@@ -418,15 +415,15 @@ public class BotService {
                 if (paginationOrder == 2) {
                     --paginationOrder;
                     editMessageReplyMarkupPrevOrder.setReplyMarkup(Button.getNumberOrderButton(7));
-                    return editMessageReplyMarkupPrevOrder;
                 } else if (paginationOrder < 2) {
                     editMessageReplyMarkupPrevOrder.setReplyMarkup(Button.getNumberOrderButton(7));
-                    return editMessageReplyMarkupPrevOrder;
                 } else {
                     --paginationOrder;
                     editMessageReplyMarkupPrevOrder.setReplyMarkup(Button.getNumberOrderButton(paginationOrder * 7));
-                    return editMessageReplyMarkupPrevOrder;
                 }
+
+                return editMessageReplyMarkupPrevOrder;
+
 
             case "one_order":
                 sendPhoto = pagedProductOrder(chatId, userName, 0);
@@ -466,6 +463,9 @@ public class BotService {
             //Пагинация
             case "next_stock":
                 int countStock = sizeListProductStock / 7;
+                EditMessageReplyMarkup editMessageReplyMarkupStock = new EditMessageReplyMarkup();
+                editMessageReplyMarkupStock.setMessageId(cbq.getMessage().getMessageId());
+                editMessageReplyMarkupStock.setChatId(String.valueOf(chatId));
 
                 if (paginationStock == countStock) {
 
@@ -473,23 +473,16 @@ public class BotService {
                         ++paginationStock;
                     }
 
-                    EditMessageReplyMarkup editMessageReplyMarkupStock = new EditMessageReplyMarkup();
-                    editMessageReplyMarkupStock.setMessageId(cbq.getMessage().getMessageId());
-                    editMessageReplyMarkupStock.setChatId(String.valueOf(chatId));
                     editMessageReplyMarkupStock.setReplyMarkup(Button.getNumberStockButton(paginationStock * 7));
-                    return editMessageReplyMarkupStock;
-                }
-
-                if (paginationStock < countStock) {
+                } else if (paginationStock < countStock) {
                     ++paginationStock;
-                    EditMessageReplyMarkup editMessageReplyMarkupStock = new EditMessageReplyMarkup();
-                    editMessageReplyMarkupStock.setMessageId(cbq.getMessage().getMessageId());
-                    editMessageReplyMarkupStock.setChatId(String.valueOf(chatId));
+
                     editMessageReplyMarkupStock.setReplyMarkup(Button.getNumberStockButton(paginationStock * 7));
-                    return editMessageReplyMarkupStock;
+                } else {
+                    editMessageReplyMarkupStock.setReplyMarkup(cbq.getMessage().getReplyMarkup());
                 }
 
-                break;
+                return editMessageReplyMarkupStock;
 
             case "prev_stock":
                 EditMessageReplyMarkup editMessageReplyMarkupStockPrev = new EditMessageReplyMarkup();
@@ -499,15 +492,15 @@ public class BotService {
                 if (paginationStock == 2) {
                     --paginationStock;
                     editMessageReplyMarkupStockPrev.setReplyMarkup(Button.getNumberStockButton(7));
-                    return editMessageReplyMarkupStockPrev;
                 } else if (paginationStock < 2) {
                     editMessageReplyMarkupStockPrev.setReplyMarkup(Button.getNumberStockButton(7));
-                    return editMessageReplyMarkupStockPrev;
                 } else {
                     --paginationStock;
                     editMessageReplyMarkupStockPrev.setReplyMarkup(Button.getNumberStockButton(paginationStock * 7));
-                    return editMessageReplyMarkupStockPrev;
                 }
+
+                return editMessageReplyMarkupStockPrev;
+
 
             case "one_stock":
                 sendPhoto = pagedProductStock(chatId, userName, 0);
