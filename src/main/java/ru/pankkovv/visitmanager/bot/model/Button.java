@@ -57,7 +57,6 @@ public class Button {
         List<InlineKeyboardButton> rowInLineOne = new ArrayList<>();
         List<InlineKeyboardButton> rowInLineTwo = new ArrayList<>();
         List<InlineKeyboardButton> rowInLineThree = new ArrayList<>();
-        int i = number - 6;
 
         InlineKeyboardButton oneButton = new InlineKeyboardButton();
         oneButton.setCallbackData(ButtonData.ONE.label);
@@ -91,40 +90,58 @@ public class Button {
         InlineKeyboardButton startButton = new InlineKeyboardButton();
         startButton.setText(ButtonMessage.START.label);
         startButton.setCallbackData(ButtonData.START_BTN.label);
+        int i = 1;
 
-        while(i < number){
+        if (number > 7) {
+            i = number - 6;
+        }
+
+        if (i <= sizeListProductOrder) {
             oneButton.setText(String.valueOf(i));
-            ++i;
-
-            twoButton.setText(String.valueOf(i));
-            ++i;
-
-            threeButton.setText(String.valueOf(i));
-            ++i;
-
-            fourButton.setText(String.valueOf(i));
-            ++i;
-
-            fiveButton.setText(String.valueOf(i));
-            ++i;
-
-            sixButton.setText(String.valueOf(i));
-            ++i;
-
-            sevenButton.setText(String.valueOf(i));
+            rowInLineOne.add(oneButton);
             ++i;
         }
 
-        rowInLineOne.add(oneButton);
-        rowInLineOne.add(twoButton);
-        rowInLineOne.add(threeButton);
-        rowInLineOne.add(fourButton);
-        rowInLineOne.add(fiveButton);
-        rowInLineOne.add(sixButton);
-        rowInLineOne.add(sevenButton);
+        if (i <= sizeListProductOrder) {
+            twoButton.setText(String.valueOf(i));
+            rowInLineOne.add(twoButton);
+            ++i;
+        }
 
-        rowInLineTwo.add(prevButton);
-        rowInLineTwo.add(nextButton);
+        if (i <= sizeListProductOrder) {
+            threeButton.setText(String.valueOf(i));
+            rowInLineOne.add(threeButton);
+            ++i;
+        }
+
+        if (i <= sizeListProductOrder) {
+            fourButton.setText(String.valueOf(i));
+            rowInLineOne.add(fourButton);
+            ++i;
+        }
+
+        if (i <= sizeListProductOrder) {
+            fiveButton.setText(String.valueOf(i));
+            rowInLineOne.add(fiveButton);
+            ++i;
+        }
+
+        if (i <= sizeListProductOrder) {
+            sixButton.setText(String.valueOf(i));
+            rowInLineOne.add(sixButton);
+            ++i;
+        }
+
+        if (i <= sizeListProductOrder) {
+            sevenButton.setText(String.valueOf(i));
+            rowInLineOne.add(sevenButton);
+            ++i;
+        }
+
+        if (sizeListProductOrder > 7) {
+            rowInLineTwo.add(prevButton);
+            rowInLineTwo.add(nextButton);
+        }
 
         rowInLineThree.add(startButton);
 

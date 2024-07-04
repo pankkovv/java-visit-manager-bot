@@ -279,15 +279,22 @@ public class BotService {
 
             //Пагинация
             case "next":
-                int count;
+                int count = sizeListProductOrder / 7;
 
-                if (sizeListProductOrder % 7 == 0) {
-                    count = sizeListProductOrder / 7;
-                } else {
-                    count = sizeListProductOrder / 7;
+                if (pagination == count) {
+
+                    if (pagination * 7 < sizeListProductOrder) {
+                        ++pagination;
+                    }
+
+                    EditMessageReplyMarkup editMessageReplyMarkup = new EditMessageReplyMarkup();
+                    editMessageReplyMarkup.setMessageId(cbq.getMessage().getMessageId());
+                    editMessageReplyMarkup.setChatId(String.valueOf(chatId));
+                    editMessageReplyMarkup.setReplyMarkup(Button.getNumberButton(pagination * 7));
+                    return editMessageReplyMarkup;
                 }
 
-                if (pagination <= count) {
+                if (pagination < count) {
                     ++pagination;
                     EditMessageReplyMarkup editMessageReplyMarkup = new EditMessageReplyMarkup();
                     editMessageReplyMarkup.setMessageId(cbq.getMessage().getMessageId());
@@ -297,7 +304,6 @@ public class BotService {
                 }
 
                 break;
-
 
             case "prev":
                 EditMessageReplyMarkup editMessageReplyMarkupPrev = new EditMessageReplyMarkup();

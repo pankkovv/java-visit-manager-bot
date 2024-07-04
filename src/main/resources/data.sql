@@ -19,40 +19,52 @@ INSERT INTO profile(id, username, description, path_file)
 VALUES (2, 'eee_kisel', 'New designer this bot', 'img/start.jpg');
 
 INSERT INTO product(id, name, description, price, category_id, profile_id, type, path_file)
-VALUES (1, 'Кольцо', 'Кольцо цифровое для заказа', 100, 1, 1, 'ORDER', 'img/start.jpg');
+VALUES (1, 'Кольцо диджитал',
+        'Изображение для этого колечка рисуется на графическом планшете, печатается и вставляется в основу, ' ||
+        'затем покрывается эпоксидной смолой. ' ||
+        'Особенности: точность деталей, возможность создания нескольких украшений с одинаковым рисунком.',
+        1500, 1, 1, 'ORDER', 'img/ring_digital_bot.jpeg');
 
 INSERT INTO product(id, name, description, price, category_id, profile_id, type, path_file)
-VALUES (2, 'Кольцо', 'Кольцо красками для заказа', 100, 2, 1, 'ORDER', 'img/start.jpg');
+VALUES (2, 'Кольцо красками',
+        'Изображение для этого колечка наносится акриловыми красками прямо на изделие, затем покрывается ' ||
+        'эпоксидной смолой. Особенности: живописность, рисунок выглядит «живым»',
+        2000, 2, 1, 'ORDER', 'img/ring_paints_bot.jpeg');
 
 INSERT INTO product(id, name, description, price, category_id, profile_id, type, path_file)
-VALUES (3, 'Кулон', 'Кулон диджитал для заказа', 100, 3, 1, 'ORDER', 'img/start.jpg');
+VALUES (3, 'Кулон диджитал',
+        'Изображение для этого кулона рисуется на графическом планшете, печатается и вставляется в основу, ' ||
+        'затем покрывается эпоксидной смолой.Особенности: точность деталей, возможность создания нескольких ' ||
+        'украшений с одинаковым рисунком',
+        1700, 3, 1, 'ORDER', 'img/pendant_digital_bot.jpeg');
 
 INSERT INTO product(id, name, description, price, category_id, profile_id, type, path_file)
-VALUES (4, 'Кулон', 'Кулон красками для заказа', 100, 4, 1, 'ORDER', 'img/start.jpg');
+VALUES (4, 'Кулон красками',
+        'Изображение для этого кулона наносится акриловыми красками прямо на изделие, затем покрывается эпоксидной смолой. ' ||
+        'Особенности: живописность, рисунок выглядит «живым»',
+        2200, 4, 1, 'ORDER', 'img/pendant_paints_bot.jpeg');
 
 INSERT INTO product(id, name, description, price, category_id, profile_id, type, path_file)
-VALUES (5, 'Серьги', 'Серьги для заказа', 100, 5, 1, 'ORDER', 'img/start.jpg');
+VALUES (5, 'Серьги',
+        'Изображение наносится акриловыми красками прямо на сережки, затем покрывается эпоксидной смолой. ' ||
+        'Рисунки получаются достаточно миниатюрными, поэтому для них подойдут более простые сюжеты',
+        2200, 5, 1, 'ORDER', 'img/earrings_bot.jpeg');
 
 INSERT INTO product(id, name, description, price, category_id, profile_id, type, path_file)
-VALUES (6, 'Ожерелье', 'Ожерелье для заказа', 100, 6, 1, 'ORDER', 'img/start.jpg');
+VALUES (6, 'Ожерелье',
+        'Изделие состоит из комбинации натуральных камней, деталей из нержавеющей стали, ' ||
+        'а также кулона с авторским рисунком',
+        3000, 6, 1, 'ORDER', 'img/necklace_bot.jpeg');
 
 INSERT INTO product(id, name, description, price, category_id, profile_id, type, path_file)
-VALUES (7, 'Бумага', 'Бумажный мерч для заказа', 100, 7, 1, 'ORDER', 'img/start.jpg');
+VALUES (7, 'Бумага',
+        'В этот раздел входит большое количество мерча:
+- открытки
+- стикеры
+- постеры
+- переводные татуировки
+- отрывные блоки для заметок
+- слайдеры для ногтей',
+        100, 7, 1, 'ORDER', 'img/paper_bot.jpeg');
 
-INSERT INTO product(id, name, description, price, category_id, profile_id, type, path_file)
-VALUES (8, 'Бумагаahhggfhghfgaaaa', 'Бумажный мерч для заказа', 100, 1, 1, 'ORDER', 'img/start.jpg');
-INSERT INTO product(id, name, description, price, category_id, profile_id, type, path_file)
-VALUES (9, 'Бумагаfgfgaaaaa', 'Бумажный мерч для заказа', 100, 1, 1, 'ORDER', 'img/start.jpg');
-INSERT INTO product(id, name, description, price, category_id, profile_id, type, path_file)
-VALUES (10, 'Бумагаasadsdsaaaa', 'Бумажный мерч для заказа', 100, 1, 1, 'ORDER', 'img/start.jpg');
-INSERT INTO product(id, name, description, price, category_id, profile_id, type, path_file)
-VALUES (11, 'Бумагаafgdfgdfgdgaaaa', 'Бумажный мерч для заказа', 100, 1, 1, 'ORDER', 'img/start.jpg');
-INSERT INTO product(id, name, description, price, category_id, profile_id, type, path_file)
-VALUES (12, 'Бумагаaaasdasd', 'Бумажный мерч для заказа', 100, 1, 1, 'ORDER', 'img/start.jpg');
-INSERT INTO product(id, name, description, price, category_id, profile_id, type, path_file)
-VALUES (13, 'Бумагаaaasadasfaa', 'Бумажный мерч для заказа', 100, 1, 1, 'ORDER', 'img/start.jpg');
-INSERT INTO product(id, name, description, price, category_id, profile_id, type, path_file)
-VALUES (14, 'Бумагаasdasdasdsadaaaaa', 'Бумажный мерч для заказа', 100, 1, 1, 'ORDER', 'img/start.jpg');INSERT INTO product(id, name, description, price, category_id, profile_id, type, path_file)
-VALUES (15, 'Бумагаasdasdasdsadaaaaa', 'Бумажный мерч для заказа', 100, 1, 1, 'ORDER', 'img/start.jpg');INSERT INTO product(id, name, description, price, category_id, profile_id, type, path_file)
-VALUES (16, 'Бумагаasdasdasdsadaaaaa', 'Бумажный мерч для заказа', 100, 1, 1, 'ORDER', 'img/start.jpg');INSERT INTO product(id, name, description, price, category_id, profile_id, type, path_file)
-VALUES (17, 'Бумагаasdasdasdsadaaaaa', 'Бумажный мерч для заказа', 100, 1, 1, 'ORDER', 'img/start.jpg');
+
