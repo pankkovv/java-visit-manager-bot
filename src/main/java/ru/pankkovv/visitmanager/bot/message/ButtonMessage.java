@@ -7,7 +7,8 @@ public enum ButtonMessage {
     VIEW_PRODUCTS("Товары"),
     VIEW_PRODUCTS_ORDER("Прайслист"),
     VIEW_PRODUCTS_STOCK("Товары в наличии"),
-    BACK("Назад");
+    BACK("Назад"),
+    VIEW_FEEDBACKS("Отзывы");
 
     public final String label;
 

@@ -20,15 +20,16 @@ public class Profile {
     private String username;
     private String description;
     private String pathFile;
+
     @Override
     public String toString() {
-        return "id: " + id + "\n" +
-                "Никнейм: " + username + '\n' +
-                "О себе: " + description + '\n' +
+        return "id: " + id + "\n\n" +
+                "Никнейм: " + username + "\n\n" +
+                "О себе: " + description + "\n\n" +
                 "Путь до фото: " + pathFile;
     }
 
-    public String toStringDto(){
+    public String toStringDto() {
         return description;
     }
 }

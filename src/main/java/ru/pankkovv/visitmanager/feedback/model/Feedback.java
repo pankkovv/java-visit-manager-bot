@@ -22,5 +22,17 @@ public class Feedback {
     String pathFile;
     @ManyToOne
     @JoinColumn(name = "profile_id")
-    Profile profile;
+    Profile owner;
+
+    @Override
+    public String toString() {
+        return "id:" + id + "\n\n" +
+                "Описание:" + description + "\n\n" +
+                "Путь до файла:" + pathFile + "\n\n" +
+                "Пользователь:" + owner;
+    }
+
+    public String toStringDto() {
+        return description;
+    }
 }

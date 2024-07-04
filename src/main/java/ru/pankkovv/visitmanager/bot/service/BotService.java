@@ -204,7 +204,7 @@ public class BotService {
 
                     Feedback newFeedback = Feedback.builder()
                             .description(parameters[1])
-                            .profile(profile)
+                            .owner(profile)
                             .build();
 
                     sendPhoto.setChatId(String.valueOf(chatId));
@@ -412,7 +412,7 @@ public class BotService {
                     Feedback newFeedback = Feedback.builder()
                             .description(parameters[1])
                             .pathFile(photo.getPath())
-                            .profile(profile)
+                            .owner(profile)
                             .build();
 
                     sendPhoto.setChatId(String.valueOf(chatId));
@@ -657,7 +657,84 @@ public class BotService {
             case "seven_stock":
                 sendPhoto = pagedProductStock(chatId, userName, 6);
                 break;
+
+            //Просмотр отзывов
+            case "view_feedbacks_btn":
+                sizeListProductFeedback = feedbackService.getAll(Utils.paged(0, Integer.MAX_VALUE)).size();
+                sendPhoto = pagedFeedback(chatId, userName, 0);
+                break;
+
+            //Пагинация
+            case "next_feedback":
+                int countFeedback = sizeListProductFeedback / 7;
+                EditMessageReplyMarkup editMessageReplyMarkupFeedback = new EditMessageReplyMarkup();
+                editMessageReplyMarkupFeedback.setMessageId(cbq.getMessage().getMessageId());
+                editMessageReplyMarkupFeedback.setChatId(String.valueOf(chatId));
+
+                if (paginationFeedback == countFeedback) {
+
+                    if (paginationFeedback * 7 < sizeListProductFeedback) {
+                        ++paginationFeedback;
+                    }
+
+                    editMessageReplyMarkupFeedback.setReplyMarkup(Button.getNumberFeedbackButton(paginationFeedback * 7));
+                } else if (paginationFeedback < countFeedback) {
+                    ++paginationFeedback;
+
+                    editMessageReplyMarkupFeedback.setReplyMarkup(Button.getNumberFeedbackButton(paginationFeedback * 7));
+                } else {
+                    editMessageReplyMarkupFeedback.setReplyMarkup(cbq.getMessage().getReplyMarkup());
+                }
+
+                return editMessageReplyMarkupFeedback;
+
+            case "prev_feedback":
+                EditMessageReplyMarkup editMessageReplyMarkupStockFeedback = new EditMessageReplyMarkup();
+                editMessageReplyMarkupStockFeedback.setMessageId(cbq.getMessage().getMessageId());
+                editMessageReplyMarkupStockFeedback.setChatId(String.valueOf(chatId));
+
+                if (paginationFeedback == 2) {
+                    --paginationFeedback;
+                    editMessageReplyMarkupStockFeedback.setReplyMarkup(Button.getNumberFeedbackButton(7));
+                } else if (paginationFeedback < 2) {
+                    editMessageReplyMarkupStockFeedback.setReplyMarkup(Button.getNumberFeedbackButton(7));
+                } else {
+                    --paginationFeedback;
+                    editMessageReplyMarkupStockFeedback.setReplyMarkup(Button.getNumberFeedbackButton(paginationFeedback * 7));
+                }
+
+                return editMessageReplyMarkupStockFeedback;
+
+
+            case "one_feedback":
+                sendPhoto = pagedFeedback(chatId, userName, 0);
+                break;
+
+            case "two_feedback":
+                sendPhoto = pagedFeedback(chatId, userName, 1);
+                break;
+
+            case "three_feedback":
+                sendPhoto = pagedFeedback(chatId, userName, 2);
+                break;
+
+            case "four_feedback":
+                sendPhoto = pagedFeedback(chatId, userName, 3);
+                break;
+
+            case "five_feedback":
+                sendPhoto = pagedFeedback(chatId, userName, 4);
+                break;
+
+            case "six_feedback":
+                sendPhoto = pagedFeedback(chatId, userName, 5);
+                break;
+
+            case "seven_feedback":
+                sendPhoto = pagedFeedback(chatId, userName, 6);
+                break;
         }
+
 
         return sendPhoto;
     }
@@ -746,6 +823,51 @@ public class BotService {
                 sendPhoto.setReplyMarkup(Button.getNumberStockButton(7));
             } else {
                 sendPhoto.setReplyMarkup(Button.getNumberStockButton(paginationStock * 7));
+            }
+        }
+
+        return sendPhoto;
+    }
+
+    private SendPhoto pagedFeedback(Long chatId, String userName, int from) {
+        SendPhoto sendPhoto = new SendPhoto();
+        Feedback feedback;
+        sendPhoto.setChatId(String.valueOf(chatId));
+
+        try {
+            if (paginationFeedback >= 2) {
+                Integer value = Integer.valueOf(String.valueOf(paginationFeedback * 7 - 7 + from));
+                feedback = feedbackService.getAll(Utils.paged(value, 1)).get(0);
+            } else {
+                feedback = feedbackService.getAll(Utils.paged(from, 1)).get(0);
+            }
+
+            if (profileService.containsProfile(userName)) {
+                sendPhoto.setCaption(feedback.toString());
+            } else {
+                sendPhoto.setCaption(feedback.toStringDto());
+            }
+
+            if (feedback.getPathFile() != null) {
+                sendPhoto.setPhoto(new InputFile(new File(feedback.getPathFile())));
+            } else {
+                sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+            }
+
+            if (paginationFeedback == 1) {
+                sendPhoto.setReplyMarkup(Button.getNumberFeedbackButton(7));
+            } else {
+                sendPhoto.setReplyMarkup(Button.getNumberFeedbackButton(paginationFeedback * 7));
+            }
+
+        } catch (IndexOutOfBoundsException e) {
+            sendPhoto.setCaption("Извините, похоже данный товар не получилось найти :(");
+            sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+
+            if (paginationFeedback == 1) {
+                sendPhoto.setReplyMarkup(Button.getNumberFeedbackButton(7));
+            } else {
+                sendPhoto.setReplyMarkup(Button.getNumberFeedbackButton(paginationFeedback * 7));
             }
         }
 
