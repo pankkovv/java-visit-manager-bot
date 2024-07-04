@@ -34,6 +34,6 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category getByName(String name) {
-        return repository.getCategoriesByName(name).orElseThrow(() -> new RuntimeException());
+        return repository.getCategoriesByName(name.toLowerCase()).orElseThrow(() -> new RuntimeException());
     }
 }

@@ -2,15 +2,7 @@ package ru.pankkovv.visitmanager.utils;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
-import org.telegram.telegrambots.meta.api.objects.InputFile;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.pankkovv.visitmanager.bot.model.Button;
-import ru.pankkovv.visitmanager.product.model.Product;
-import ru.pankkovv.visitmanager.product.model.Type;
-
-import java.io.File;
 
 public class Utils {
     public static String getUserName(Update update) {
@@ -37,6 +29,12 @@ public class Utils {
     public static String[] getParameters(String text) {
         return text.replaceAll("/", "")
                 .split("\n");
+    }
+
+    public static String getParametersUpdate(String text) {
+        return text.replace(" :", ":")
+                .replace(": ", ":")
+                .split(":")[1];
     }
 
     public static Pageable paged(Integer from, Integer size) {
