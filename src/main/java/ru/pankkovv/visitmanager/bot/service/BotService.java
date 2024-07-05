@@ -1,7 +1,6 @@
 package ru.pankkovv.visitmanager.bot.service;
 
 import lombok.AllArgsConstructor;
-import net.bytebuddy.dynamic.scaffold.TypeValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
@@ -28,7 +27,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 
 import static ru.pankkovv.visitmanager.bot.model.Button.*;
 
