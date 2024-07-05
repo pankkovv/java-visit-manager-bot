@@ -14,6 +14,8 @@ import ru.pankkovv.visitmanager.bot.message.ExceptionMessage;
 import ru.pankkovv.visitmanager.bot.model.Button;
 import ru.pankkovv.visitmanager.category.model.Category;
 import ru.pankkovv.visitmanager.category.service.CategoryService;
+import ru.pankkovv.visitmanager.feedback.model.Feedback;
+import ru.pankkovv.visitmanager.feedback.service.FeedbackService;
 import ru.pankkovv.visitmanager.product.model.Product;
 import ru.pankkovv.visitmanager.product.model.Type;
 import ru.pankkovv.visitmanager.product.service.ProductService;
@@ -44,6 +46,9 @@ public class BotService {
     @Autowired
     private final CategoryService categoryService;
 
+    @Autowired
+    private final FeedbackService feedbackService;
+
     public Object parseCommand(Long chatId, String userName, String text) {
         SendPhoto sendPhoto = new SendPhoto();
         String[] parameters = Utils.getParameters(text);
@@ -66,7 +71,6 @@ public class BotService {
                 sendPhoto.setChatId(String.valueOf(chatId));
                 sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 sendPhoto.setReplyMarkup(Button.getStartButton());
-
                 break;
 
             case "создать-анкету":
@@ -85,7 +89,6 @@ public class BotService {
                 }
 
                 sendPhoto.setReplyMarkup(Button.getStartButton());
-
                 break;
 
             case "редактировать-анкету":
@@ -102,7 +105,6 @@ public class BotService {
                 sendPhoto.setChatId(String.valueOf(chatId));
                 sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 sendPhoto.setReplyMarkup(Button.getStartButton());
-
                 break;
 
             case "удалить-анкету":
@@ -121,7 +123,6 @@ public class BotService {
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
-
                 break;
 
 //                Прайслист (полка с товарами)
@@ -138,7 +139,6 @@ public class BotService {
 
                 sendPhoto.setChatId(String.valueOf(chatId));
                 sendPhoto.setReplyMarkup(Button.getStartButton());
-
                 break;
 
             case "редактировать-товар":
@@ -160,6 +160,15 @@ public class BotService {
                             String catName = Utils.getParametersUpdate(newPar);
                             Category category = categoryService.getByName(catName.toLowerCase());
                             product.setCategory(category);
+                        } else if (newPar.toLowerCase().contains("тип:")) {
+                            String typeName = Utils.getParametersUpdate(newPar);
+                            Type[] types = Type.values();
+
+                            for (Type newType : types) {
+                                if (newType.label.equals(typeName)) {
+                                    product.setType(newType);
+                                }
+                            }
                         }
                     }
 
@@ -195,19 +204,110 @@ public class BotService {
 
                 sendPhoto.setChatId(String.valueOf(chatId));
                 sendPhoto.setReplyMarkup(Button.getStartButton());
-
                 break;
 
-//                Обратная связь (отзывы)
+            //   Обратная связь (отзывы)
             case "создать-отзыв":
+                if (parameters.length == 2) {
+                    Profile profile = profileService.getByUsername(userName);
+
+                    Feedback newFeedback = Feedback.builder()
+                            .description(parameters[1])
+                            .owner(profile)
+                            .build();
+
+                    sendPhoto.setChatId(String.valueOf(chatId));
+                    sendPhoto.setCaption(feedbackService.create(newFeedback).toString());
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                } else {
+                    sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                }
+
+                sendPhoto.setReplyMarkup(Button.getStartButton());
                 break;
 
             case "редактировать-отзыв":
+                try {
+                    Long id = Long.parseLong(parameters[1]);
+                    Feedback feedback = feedbackService.getById(id);
+
+                    for (String newPar : parameters) {
+                        if (newPar.toLowerCase().contains("описание:")) {
+                            String description = Utils.getParametersUpdate(newPar);
+                            feedback.setDescription(description);
+                        }
+                    }
+
+                    sendPhoto.setCaption(feedbackService.update(feedback).toString());
+
+                    if (feedback.getPathFile() != null) {
+                        sendPhoto.setPhoto(new InputFile(new File(feedback.getPathFile())));
+                    } else {
+                        sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                    }
+
+                } catch (RuntimeException e) {
+                    sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                }
+
+                sendPhoto.setChatId(String.valueOf(chatId));
+                sendPhoto.setReplyMarkup(Button.getStartButton());
                 break;
 
             case "удалить-отзыв":
+                try {
+                    Long id = Long.parseLong(parameters[1]);
+                    feedbackService.getById(id);
+                    feedbackService.deleteById(id);
+
+                    sendPhoto.setCaption("Отзыв успешно удален!");
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                } catch (RuntimeException e) {
+                    sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                }
+
+                sendPhoto.setChatId(String.valueOf(chatId));
+                sendPhoto.setReplyMarkup(Button.getStartButton());
                 break;
 
+            //  Категория
+            case "создать-категорию":
+                if (parameters.length == 2) {
+
+                    Category newCategory = Category.builder()
+                            .name(parameters[1])
+                            .build();
+
+                    sendPhoto.setChatId(String.valueOf(chatId));
+                    sendPhoto.setCaption(categoryService.create(newCategory).toString());
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                } else {
+                    sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                }
+
+                sendPhoto.setReplyMarkup(Button.getStartButton());
+                break;
+
+            case "удалить-категорию":
+                try {
+                    Long id = Long.parseLong(parameters[1]);
+                    categoryService.getById(id);
+                    categoryService.delete(id);
+
+                    sendPhoto.setCaption("Категория успешно удален!");
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                } catch (RuntimeException e) {
+                    sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                }
+
+                sendPhoto.setChatId(String.valueOf(chatId));
+                sendPhoto.setReplyMarkup(Button.getStartButton());
+                break;
         }
 
         return sendPhoto;
@@ -295,18 +395,22 @@ public class BotService {
                             String catName = Utils.getParametersUpdate(newPar);
                             Category category = categoryService.getByName(catName.toLowerCase());
                             product.setCategory(category);
+                        } else if (newPar.toLowerCase().contains("тип:")) {
+                            String typeName = Utils.getParametersUpdate(newPar);
+                            Type[] types = Type.values();
+
+                            for (Type newType : types) {
+                                if (newType.label.equals(typeName)) {
+                                    product.setType(newType);
+                                }
+                            }
                         }
                     }
 
                     product.setPathFile(photo.getPath());
 
                     sendPhoto.setCaption(productService.update(product).toString());
-
-                    if (product.getPathFile() != null) {
-                        sendPhoto.setPhoto(new InputFile(new File(product.getPathFile())));
-                    } else {
-                        sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
-                    }
+                    sendPhoto.setPhoto(new InputFile(new File(product.getPathFile())));
 
                 } catch (RuntimeException e) {
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
@@ -318,10 +422,52 @@ public class BotService {
 
                 break;
 
+            //   Обратная связь (отзывы)
             case "создать-отзыв":
+                if (parameters.length == 2) {
+                    Profile profile = profileService.getByUsername(userName);
+
+                    Feedback newFeedback = Feedback.builder()
+                            .description(parameters[1])
+                            .pathFile(photo.getPath())
+                            .owner(profile)
+                            .build();
+
+                    sendPhoto.setChatId(String.valueOf(chatId));
+                    sendPhoto.setCaption(feedbackService.create(newFeedback).toString());
+                    sendPhoto.setPhoto(new InputFile(new File(newFeedback.getPathFile())));
+                } else {
+                    sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                }
+
+                sendPhoto.setReplyMarkup(Button.getStartButton());
                 break;
 
             case "редактировать-отзыв":
+                try {
+                    Long id = Long.parseLong(parameters[1]);
+                    Feedback feedback = feedbackService.getById(id);
+
+                    for (String newPar : parameters) {
+                        if (newPar.toLowerCase().contains("описание:")) {
+                            String description = Utils.getParametersUpdate(newPar);
+                            feedback.setDescription(description);
+                        }
+                    }
+
+                    feedback.setPathFile(photo.getPath());
+
+                    sendPhoto.setCaption(feedbackService.update(feedback).toString());
+                    sendPhoto.setPhoto(new InputFile(new File(feedback.getPathFile())));
+
+                } catch (RuntimeException e) {
+                    sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                }
+
+                sendPhoto.setChatId(String.valueOf(chatId));
+                sendPhoto.setReplyMarkup(Button.getStartButton());
                 break;
         }
 
@@ -343,15 +489,47 @@ public class BotService {
             case "help_btn":
                 if (profileService.containsProfile(userName)) {
                     sendPhoto.setCaption(CommandMessage.HELP_ADMIN.label);
+                    sendPhoto.setReplyMarkup(Button.getHelpAdminButton());
                 } else {
                     sendPhoto.setCaption(CommandMessage.HELP_COMMON.label);
+                    sendPhoto.setReplyMarkup(Button.getStartButton());
                 }
 
                 sendPhoto.setChatId(String.valueOf(chatId));
                 sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
-                sendPhoto.setReplyMarkup(Button.getStartButton());
 
                 break;
+            case "command_profile_btn":
+                sendPhoto.setChatId(String.valueOf(chatId));
+                sendPhoto.setCaption(CommandMessage.HELP_ADMIN_COMMAND_PROFILE.label);
+                sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                sendPhoto.setReplyMarkup(Button.getBackAllCommandButton());
+                break;
+
+            case "command_product_btn":
+                sendPhoto.setChatId(String.valueOf(chatId));
+                sendPhoto.setCaption(CommandMessage.HELP_ADMIN_COMMAND_PRODUCT.label);
+                sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                sendPhoto.setReplyMarkup(Button.getBackAllCommandButton());
+                break;
+
+            case "command_feedback_btn":
+                sendPhoto.setChatId(String.valueOf(chatId));
+                sendPhoto.setCaption(CommandMessage.HELP_ADMIN_COMMAND_FEEDBACK.label);
+                sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                sendPhoto.setReplyMarkup(Button.getBackAllCommandButton());
+                break;
+
+            case "command_category_btn":
+                sendPhoto.setChatId(String.valueOf(chatId));
+                sendPhoto.setCaption(CommandMessage.HELP_ADMIN_COMMAND_CATEGORY.label);
+                sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                sendPhoto.setReplyMarkup(Button.getBackAllCommandButton());
+                break;
+
+            case "back_all_command_btn":
+                cbq.setData("help_btn");
+                return parseCommand(chatId, userName, cbq);
 
             case "about_me_btn":
                 if (profileService.containsProfile(userName)) {
@@ -529,7 +707,92 @@ public class BotService {
             case "seven_stock":
                 sendPhoto = pagedProductStock(chatId, userName, 6);
                 break;
+
+            //Просмотр отзывов
+            case "view_feedbacks_btn":
+                sizeListProductFeedback = feedbackService.getAll(Utils.paged(0, Integer.MAX_VALUE)).size();
+                sendPhoto = pagedFeedback(chatId, userName, 0);
+                break;
+
+            //Пагинация
+            case "next_feedback":
+                int countFeedback = sizeListProductFeedback / 7;
+                EditMessageReplyMarkup editMessageReplyMarkupFeedback = new EditMessageReplyMarkup();
+                editMessageReplyMarkupFeedback.setMessageId(cbq.getMessage().getMessageId());
+                editMessageReplyMarkupFeedback.setChatId(String.valueOf(chatId));
+
+                if (paginationFeedback == countFeedback) {
+
+                    if (paginationFeedback * 7 < sizeListProductFeedback) {
+                        ++paginationFeedback;
+                    }
+
+                    editMessageReplyMarkupFeedback.setReplyMarkup(Button.getNumberFeedbackButton(paginationFeedback * 7));
+                } else if (paginationFeedback < countFeedback) {
+                    ++paginationFeedback;
+
+                    editMessageReplyMarkupFeedback.setReplyMarkup(Button.getNumberFeedbackButton(paginationFeedback * 7));
+                } else {
+                    editMessageReplyMarkupFeedback.setReplyMarkup(cbq.getMessage().getReplyMarkup());
+                }
+
+                return editMessageReplyMarkupFeedback;
+
+            case "prev_feedback":
+                EditMessageReplyMarkup editMessageReplyMarkupStockFeedback = new EditMessageReplyMarkup();
+                editMessageReplyMarkupStockFeedback.setMessageId(cbq.getMessage().getMessageId());
+                editMessageReplyMarkupStockFeedback.setChatId(String.valueOf(chatId));
+
+                if (paginationFeedback == 2) {
+                    --paginationFeedback;
+                    editMessageReplyMarkupStockFeedback.setReplyMarkup(Button.getNumberFeedbackButton(7));
+                } else if (paginationFeedback < 2) {
+                    editMessageReplyMarkupStockFeedback.setReplyMarkup(Button.getNumberFeedbackButton(7));
+                } else {
+                    --paginationFeedback;
+                    editMessageReplyMarkupStockFeedback.setReplyMarkup(Button.getNumberFeedbackButton(paginationFeedback * 7));
+                }
+
+                return editMessageReplyMarkupStockFeedback;
+
+
+            case "one_feedback":
+                sendPhoto = pagedFeedback(chatId, userName, 0);
+                break;
+
+            case "two_feedback":
+                sendPhoto = pagedFeedback(chatId, userName, 1);
+                break;
+
+            case "three_feedback":
+                sendPhoto = pagedFeedback(chatId, userName, 2);
+                break;
+
+            case "four_feedback":
+                sendPhoto = pagedFeedback(chatId, userName, 3);
+                break;
+
+            case "five_feedback":
+                sendPhoto = pagedFeedback(chatId, userName, 4);
+                break;
+
+            case "six_feedback":
+                sendPhoto = pagedFeedback(chatId, userName, 5);
+                break;
+
+            case "seven_feedback":
+                sendPhoto = pagedFeedback(chatId, userName, 6);
+                break;
+
+                //Сделать заказ
+            case "make_order_btn":
+                sendPhoto.setChatId(String.valueOf(chatId));
+                sendPhoto.setCaption(CommandMessage.MAKE_ORDER.label);
+                sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                sendPhoto.setReplyMarkup(Button.getProductButton());
+                break;
         }
+
 
         return sendPhoto;
     }
@@ -618,6 +881,51 @@ public class BotService {
                 sendPhoto.setReplyMarkup(Button.getNumberStockButton(7));
             } else {
                 sendPhoto.setReplyMarkup(Button.getNumberStockButton(paginationStock * 7));
+            }
+        }
+
+        return sendPhoto;
+    }
+
+    private SendPhoto pagedFeedback(Long chatId, String userName, int from) {
+        SendPhoto sendPhoto = new SendPhoto();
+        Feedback feedback;
+        sendPhoto.setChatId(String.valueOf(chatId));
+
+        try {
+            if (paginationFeedback >= 2) {
+                Integer value = Integer.valueOf(String.valueOf(paginationFeedback * 7 - 7 + from));
+                feedback = feedbackService.getAll(Utils.paged(value, 1)).get(0);
+            } else {
+                feedback = feedbackService.getAll(Utils.paged(from, 1)).get(0);
+            }
+
+            if (profileService.containsProfile(userName)) {
+                sendPhoto.setCaption(feedback.toString());
+            } else {
+                sendPhoto.setCaption(feedback.toStringDto());
+            }
+
+            if (feedback.getPathFile() != null) {
+                sendPhoto.setPhoto(new InputFile(new File(feedback.getPathFile())));
+            } else {
+                sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+            }
+
+            if (paginationFeedback == 1) {
+                sendPhoto.setReplyMarkup(Button.getNumberFeedbackButton(7));
+            } else {
+                sendPhoto.setReplyMarkup(Button.getNumberFeedbackButton(paginationFeedback * 7));
+            }
+
+        } catch (IndexOutOfBoundsException e) {
+            sendPhoto.setCaption("Извините, похоже данный товар не получилось найти :(");
+            sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+
+            if (paginationFeedback == 1) {
+                sendPhoto.setReplyMarkup(Button.getNumberFeedbackButton(7));
+            } else {
+                sendPhoto.setReplyMarkup(Button.getNumberFeedbackButton(paginationFeedback * 7));
             }
         }
 
