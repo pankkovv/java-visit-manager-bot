@@ -36,19 +36,17 @@ public class Product {
     @Override
     public String toString() {
         return "id: " + id + "\n\n" +
-                "Название товара: " + name + "\n\n" +
-                "Описание: " + description + "\n\n" +
-                "Цена: " + price + "\n\n" +
-                "Категория: " + category.getName() + "\n\n" +
-                "Тип: " + type.label + "\n\n" +
-                "Путь до фото: " + pathFile + "\n\n" +
-                "Пользователь:" + owner;
+                "Название товара:\n" + name + "\n\n" +
+                "Описание:\n" + description + "\n\n" +
+                "Стоимость:\n" + price + " ₽" + "\n\n" +
+                "Категория:\n" + category.getName() + "\n\n" +
+                "Тип:\n" + type.label + "\n\n" +
+                "Путь до фото:\n" + pathFile + "\n\n";
     }
 
     public String toStringDto() {
-        return "Название товара: " + name + "\n\n" +
-                "Описание: " + description + "\n\n" +
-                "Цена: " + price + "\n\n" +
-                "Категория: " + category.getName();
+        return  name + "\n\n" +
+                description + "\n\n" +
+                "Стоимость: " + price + " ₽";
     }
 }

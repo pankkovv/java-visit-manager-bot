@@ -24,9 +24,9 @@ public class Profile {
     @Override
     public String toString() {
         return "id: " + id + "\n\n" +
-                "Никнейм: " + username + "\n\n" +
-                "О себе: " + description + "\n\n" +
-                "Путь до фото: " + pathFile;
+                "Никнейм:\n" + username + "\n\n" +
+                "О себе:\n" + description + "\n\n" +
+                "Путь до фото:\n" + pathFile;
     }
 
     public String toStringDto() {

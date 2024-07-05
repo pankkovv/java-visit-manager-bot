@@ -26,10 +26,9 @@ public class Feedback {
 
     @Override
     public String toString() {
-        return "id:" + id + "\n\n" +
-                "Описание:" + description + "\n\n" +
-                "Путь до файла:" + pathFile + "\n\n" +
-                "Пользователь:" + owner;
+        return "id: " + id + "\n\n" +
+                "Описание:\n" + description + "\n\n" +
+                "Путь до файла:\n" + pathFile + "\n\n";
     }
 
     public String toStringDto() {
