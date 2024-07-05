@@ -1,6 +1,5 @@
 package ru.pankkovv.visitmanager.category.service;
 
-import org.springframework.stereotype.Service;
 import ru.pankkovv.visitmanager.category.model.Category;
 
 public interface CategoryService {

@@ -24,6 +24,7 @@ public class Button {
         List<InlineKeyboardButton> rowInLineThree = new ArrayList<>();
         List<InlineKeyboardButton> rowInLineFour = new ArrayList<>();
         List<InlineKeyboardButton> rowInLineFive = new ArrayList<>();
+        List<InlineKeyboardButton> rowInLineSix = new ArrayList<>();
 
         InlineKeyboardButton startButton = new InlineKeyboardButton();
         startButton.setText(ButtonMessage.START.label);
@@ -45,17 +46,94 @@ public class Button {
         viewFeedbacks.setText(ButtonMessage.VIEW_FEEDBACKS.label);
         viewFeedbacks.setCallbackData(ButtonData.VIEW_FEEDBACKS_BTN.label);
 
+        InlineKeyboardButton makeOrderButton = new InlineKeyboardButton();
+        makeOrderButton.setText(ButtonMessage.MAKE_ORDER.label);
+        makeOrderButton.setCallbackData(ButtonData.MAKE_ORDER_BTN.label);
+
         rowInLineOne.add(startButton);
         rowInLineTwo.add(helpButton);
         rowInLineThree.add(aboutMeButton);
         rowInLineFour.add(viewProducts);
         rowInLineFive.add(viewFeedbacks);
+        rowInLineSix.add(makeOrderButton);
 
         rowsInLine.add(rowInLineOne);
         rowsInLine.add(rowInLineTwo);
         rowsInLine.add(rowInLineThree);
         rowsInLine.add(rowInLineFour);
         rowsInLine.add(rowInLineFive);
+        rowsInLine.add(rowInLineSix);
+
+        inlineKeyboardMarkup.setKeyboard(rowsInLine);
+
+        return inlineKeyboardMarkup;
+    }
+
+    public static InlineKeyboardMarkup getHelpAdminButton() {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
+        List<InlineKeyboardButton> rowInLineOne = new ArrayList<>();
+        List<InlineKeyboardButton> rowInLineTwo = new ArrayList<>();
+        List<InlineKeyboardButton> rowInLineThree = new ArrayList<>();
+        List<InlineKeyboardButton> rowInLineFour = new ArrayList<>();
+        List<InlineKeyboardButton> rowInLineFive = new ArrayList<>();
+
+        InlineKeyboardButton commandProfile = new InlineKeyboardButton();
+        commandProfile.setText(ButtonMessage.COMMAND_PROFILE.label);
+        commandProfile.setCallbackData(ButtonData.COMMAND_PROFILE_BTN.label);
+
+        InlineKeyboardButton commandProduct = new InlineKeyboardButton();
+        commandProduct.setText(ButtonMessage.COMMAND_PRODUCT.label);
+        commandProduct.setCallbackData(ButtonData.COMMAND_PRODUCT_BTN.label);
+
+        InlineKeyboardButton commandFeedback = new InlineKeyboardButton();
+        commandFeedback.setText(ButtonMessage.COMMAND_FEEDBACK.label);
+        commandFeedback.setCallbackData(ButtonData.COMMAND_FEEDBACK_BTN.label);
+
+        InlineKeyboardButton commandCategory = new InlineKeyboardButton();
+        commandCategory.setText(ButtonMessage.COMMAND_CATEGORY.label);
+        commandCategory.setCallbackData(ButtonData.COMMAND_CATEGORY_BTN.label);
+
+        InlineKeyboardButton startButton = new InlineKeyboardButton();
+        startButton.setText(ButtonMessage.START.label);
+        startButton.setCallbackData(ButtonData.START_BTN.label);
+
+        rowInLineOne.add(commandProfile);
+        rowInLineTwo.add(commandProduct);
+        rowInLineThree.add(commandFeedback);
+        rowInLineFour.add(commandCategory);
+        rowInLineFive.add(startButton);
+
+        rowsInLine.add(rowInLineOne);
+        rowsInLine.add(rowInLineTwo);
+        rowsInLine.add(rowInLineThree);
+        rowsInLine.add(rowInLineFour);
+        rowsInLine.add(rowInLineFive);
+
+        inlineKeyboardMarkup.setKeyboard(rowsInLine);
+
+        return inlineKeyboardMarkup;
+    }
+
+    public static InlineKeyboardMarkup getBackAllCommandButton() {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
+        List<InlineKeyboardButton> rowInLineOne = new ArrayList<>();
+        List<InlineKeyboardButton> rowInLineTwo = new ArrayList<>();
+
+        InlineKeyboardButton backButton = new InlineKeyboardButton();
+        backButton.setText(ButtonMessage.BACK_ALL_COMMAND.label);
+        backButton.setCallbackData(ButtonData.BACK_ALL_COMMAND_BTN.label);
+
+        InlineKeyboardButton startButton = new InlineKeyboardButton();
+        startButton.setText(ButtonMessage.START.label);
+        startButton.setCallbackData(ButtonData.START_BTN.label);
+
+        rowInLineOne.add(backButton);
+        rowInLineTwo.add(startButton);
+
+        rowsInLine.add(rowInLineOne);
+        rowsInLine.add(rowInLineTwo);
 
         inlineKeyboardMarkup.setKeyboard(rowsInLine);
 
@@ -103,6 +181,7 @@ public class Button {
         List<InlineKeyboardButton> rowInLineTwo = new ArrayList<>();
         List<InlineKeyboardButton> rowInLineThree = new ArrayList<>();
         List<InlineKeyboardButton> rowInLineFour = new ArrayList<>();
+        List<InlineKeyboardButton> rowInLineFive = new ArrayList<>();
 
         InlineKeyboardButton oneButton = new InlineKeyboardButton();
         oneButton.setCallbackData(ButtonData.ONE_ORDER.label);
@@ -140,6 +219,10 @@ public class Button {
         InlineKeyboardButton startButton = new InlineKeyboardButton();
         startButton.setText(ButtonMessage.START.label);
         startButton.setCallbackData(ButtonData.START_BTN.label);
+
+        InlineKeyboardButton makeOrderButton = new InlineKeyboardButton();
+        makeOrderButton.setText(ButtonMessage.MAKE_ORDER.label);
+        makeOrderButton.setCallbackData(ButtonData.MAKE_ORDER_BTN.label);
 
         if (number > 7) {
             c = number - 6;
@@ -194,11 +277,13 @@ public class Button {
 
         rowInLineThree.add(backButton);
         rowInLineFour.add(startButton);
+        rowInLineFive.add(makeOrderButton);
 
         rowsInLine.add(rowInLineOne);
         rowsInLine.add(rowInLineTwo);
         rowsInLine.add(rowInLineThree);
         rowsInLine.add(rowInLineFour);
+        rowsInLine.add(rowInLineFive);
 
         inlineKeyboardMarkup.setKeyboard(rowsInLine);
 
@@ -213,6 +298,7 @@ public class Button {
         List<InlineKeyboardButton> rowInLineTwo = new ArrayList<>();
         List<InlineKeyboardButton> rowInLineThree = new ArrayList<>();
         List<InlineKeyboardButton> rowInLineFour = new ArrayList<>();
+        List<InlineKeyboardButton> rowInLineFive = new ArrayList<>();
 
         InlineKeyboardButton oneButton = new InlineKeyboardButton();
         oneButton.setCallbackData(ButtonData.ONE_STOCK.label);
@@ -250,6 +336,10 @@ public class Button {
         InlineKeyboardButton startButton = new InlineKeyboardButton();
         startButton.setText(ButtonMessage.START.label);
         startButton.setCallbackData(ButtonData.START_BTN.label);
+
+        InlineKeyboardButton makeOrderButton = new InlineKeyboardButton();
+        makeOrderButton.setText(ButtonMessage.MAKE_ORDER.label);
+        makeOrderButton.setCallbackData(ButtonData.MAKE_ORDER_BTN.label);
 
         if (number > 7) {
             i = number - 6;
@@ -304,11 +394,13 @@ public class Button {
 
         rowInLineThree.add(backButton);
         rowInLineFour.add(startButton);
+        rowInLineFive.add(makeOrderButton);
 
         rowsInLine.add(rowInLineOne);
         rowsInLine.add(rowInLineTwo);
         rowsInLine.add(rowInLineThree);
         rowsInLine.add(rowInLineFour);
+        rowsInLine.add(rowInLineFive);
 
         inlineKeyboardMarkup.setKeyboard(rowsInLine);
 

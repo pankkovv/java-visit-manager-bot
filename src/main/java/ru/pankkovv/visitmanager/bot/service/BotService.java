@@ -1,6 +1,7 @@
 package ru.pankkovv.visitmanager.bot.service;
 
 import lombok.AllArgsConstructor;
+import net.bytebuddy.dynamic.scaffold.TypeValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
@@ -27,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 import static ru.pankkovv.visitmanager.bot.model.Button.*;
 
@@ -160,6 +162,15 @@ public class BotService {
                             String catName = Utils.getParametersUpdate(newPar);
                             Category category = categoryService.getByName(catName.toLowerCase());
                             product.setCategory(category);
+                        } else if (newPar.toLowerCase().contains("тип:")) {
+                            String typeName = Utils.getParametersUpdate(newPar);
+                            Type[] types = Type.values();
+
+                            for (Type newType : types) {
+                                if (newType.label.equals(typeName)) {
+                                    product.setType(newType);
+                                }
+                            }
                         }
                     }
 
@@ -386,6 +397,15 @@ public class BotService {
                             String catName = Utils.getParametersUpdate(newPar);
                             Category category = categoryService.getByName(catName.toLowerCase());
                             product.setCategory(category);
+                        } else if (newPar.toLowerCase().contains("тип:")) {
+                            String typeName = Utils.getParametersUpdate(newPar);
+                            Type[] types = Type.values();
+
+                            for (Type newType : types) {
+                                if (newType.label.equals(typeName)) {
+                                    product.setType(newType);
+                                }
+                            }
                         }
                     }
 
@@ -471,15 +491,47 @@ public class BotService {
             case "help_btn":
                 if (profileService.containsProfile(userName)) {
                     sendPhoto.setCaption(CommandMessage.HELP_ADMIN.label);
+                    sendPhoto.setReplyMarkup(Button.getHelpAdminButton());
                 } else {
                     sendPhoto.setCaption(CommandMessage.HELP_COMMON.label);
+                    sendPhoto.setReplyMarkup(Button.getStartButton());
                 }
 
                 sendPhoto.setChatId(String.valueOf(chatId));
                 sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
-                sendPhoto.setReplyMarkup(Button.getStartButton());
 
                 break;
+            case "command_profile_btn":
+                sendPhoto.setChatId(String.valueOf(chatId));
+                sendPhoto.setCaption(CommandMessage.HELP_ADMIN_COMMAND_PROFILE.label);
+                sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                sendPhoto.setReplyMarkup(Button.getBackAllCommandButton());
+                break;
+
+            case "command_product_btn":
+                sendPhoto.setChatId(String.valueOf(chatId));
+                sendPhoto.setCaption(CommandMessage.HELP_ADMIN_COMMAND_PRODUCT.label);
+                sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                sendPhoto.setReplyMarkup(Button.getBackAllCommandButton());
+                break;
+
+            case "command_feedback_btn":
+                sendPhoto.setChatId(String.valueOf(chatId));
+                sendPhoto.setCaption(CommandMessage.HELP_ADMIN_COMMAND_FEEDBACK.label);
+                sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                sendPhoto.setReplyMarkup(Button.getBackAllCommandButton());
+                break;
+
+            case "command_category_btn":
+                sendPhoto.setChatId(String.valueOf(chatId));
+                sendPhoto.setCaption(CommandMessage.HELP_ADMIN_COMMAND_CATEGORY.label);
+                sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                sendPhoto.setReplyMarkup(Button.getBackAllCommandButton());
+                break;
+
+            case "back_all_command_btn":
+                cbq.setData("help_btn");
+                return parseCommand(chatId, userName, cbq);
 
             case "about_me_btn":
                 if (profileService.containsProfile(userName)) {
@@ -732,6 +784,14 @@ public class BotService {
 
             case "seven_feedback":
                 sendPhoto = pagedFeedback(chatId, userName, 6);
+                break;
+
+                //Сделать заказ
+            case "make_order_btn":
+                sendPhoto.setChatId(String.valueOf(chatId));
+                sendPhoto.setCaption(CommandMessage.MAKE_ORDER.label);
+                sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                sendPhoto.setReplyMarkup(Button.getProductButton());
                 break;
         }
 

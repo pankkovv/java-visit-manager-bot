@@ -3,7 +3,13 @@ package ru.pankkovv.visitmanager.bot.message;
 public enum ButtonData {
     START_BTN("start_btn"),
     HELP_BTN("help_btn"),
+    COMMAND_PROFILE_BTN("command_profile_btn"),
+    COMMAND_PRODUCT_BTN("command_product_btn"),
+    COMMAND_FEEDBACK_BTN("command_feedback_btn"),
+    COMMAND_CATEGORY_BTN("command_category_btn"),
+    BACK_ALL_COMMAND_BTN("back_all_command_btn"),
     ABOUT_ME_BTN("about_me_btn"),
+    MAKE_ORDER_BTN("make_order_btn"),
     VIEW_FEEDBACKS_BTN("view_feedbacks_btn"),
     VIEW_PRODUCTS_BTN("view_products_btn"),
     VIEW_PRODUCTS_ORDER_BTN("view_products_order_btn"),
