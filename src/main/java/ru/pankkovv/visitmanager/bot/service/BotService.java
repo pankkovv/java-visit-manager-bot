@@ -7,7 +7,6 @@ import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
-import ru.pankkovv.visitmanager.bot.mapper.ProductMapper;
 import ru.pankkovv.visitmanager.bot.message.ButtonData;
 import ru.pankkovv.visitmanager.bot.message.CommandMessage;
 import ru.pankkovv.visitmanager.bot.message.ExceptionMessage;
@@ -33,19 +32,12 @@ import static ru.pankkovv.visitmanager.bot.model.Button.*;
 @Service
 @AllArgsConstructor
 public class BotService {
-
     @Autowired
     private final ProfileService profileService;
-
     @Autowired
     private final ProductService productService;
-
-    @Autowired
-    private final ProductMapper productMapper;
-
     @Autowired
     private final CategoryService categoryService;
-
     @Autowired
     private final FeedbackService feedbackService;
 
@@ -128,7 +120,9 @@ public class BotService {
 //                Прайслист (полка с товарами)
             case "создать-товар":
                 try {
-                    Product product = productMapper.mapToProduct(text, userName);
+                    Profile profile = profileService.getByUsername(userName);
+                    Category category = categoryService.getByName(parameters[4]);
+                    Product product = productService.mapToProduct(text, category, profile);
 
                     sendPhoto.setCaption(productService.create(product).toString());
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
@@ -193,7 +187,7 @@ public class BotService {
                 try {
                     Long id = Long.parseLong(parameters[1]);
                     productService.getById(id);
-                    productService.delete(id);
+                    productService.deleteById(id);
 
                     sendPhoto.setCaption("Товар успешно удален!");
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
@@ -208,18 +202,14 @@ public class BotService {
 
             //   Обратная связь (отзывы)
             case "создать-отзыв":
-                if (parameters.length == 2) {
+                try {
                     Profile profile = profileService.getByUsername(userName);
-
-                    Feedback newFeedback = Feedback.builder()
-                            .description(parameters[1])
-                            .owner(profile)
-                            .build();
+                    Feedback newFeedback = feedbackService.mapToFeedback(text, profile);
 
                     sendPhoto.setChatId(String.valueOf(chatId));
                     sendPhoto.setCaption(feedbackService.create(newFeedback).toString());
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
-                } else {
+                } catch (RuntimeException e) {
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
@@ -275,16 +265,13 @@ public class BotService {
 
             //  Категория
             case "создать-категорию":
-                if (parameters.length == 2) {
-
-                    Category newCategory = Category.builder()
-                            .name(parameters[1])
-                            .build();
+                try {
+                    Category newCategory = categoryService.mapToCategory(text);
 
                     sendPhoto.setChatId(String.valueOf(chatId));
                     sendPhoto.setCaption(categoryService.create(newCategory).toString());
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
-                } else {
+                } catch (RuntimeException e) {
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
@@ -292,11 +279,18 @@ public class BotService {
                 sendPhoto.setReplyMarkup(Button.getStartButton());
                 break;
 
+            case "посмотреть-категории":
+                sendPhoto.setChatId(String.valueOf(chatId));
+                sendPhoto.setCaption(categoryService.mapToListCategoryDto(categoryService.getAll().toString()));
+                sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                sendPhoto.setReplyMarkup(Button.getStartButton());
+                break;
+
             case "удалить-категорию":
                 try {
                     Long id = Long.parseLong(parameters[1]);
                     categoryService.getById(id);
-                    categoryService.delete(id);
+                    categoryService.deleteById(id);
 
                     sendPhoto.setCaption("Категория успешно удален!");
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
@@ -362,7 +356,9 @@ public class BotService {
 
             case "создать-товар":
                 try {
-                    Product product = productMapper.mapToProduct(text, userName, photo.getPath());
+                    Profile profile = profileService.getByUsername(userName);
+                    Category category = categoryService.getByName(parameters[4]);
+                    Product product = productService.mapToProduct(text, category, profile, photo.getPath());
 
                     sendPhoto.setCaption(productService.create(product).toString());
                     sendPhoto.setPhoto(new InputFile(new File(product.getPathFile())));
@@ -424,19 +420,14 @@ public class BotService {
 
             //   Обратная связь (отзывы)
             case "создать-отзыв":
-                if (parameters.length == 2) {
+                try {
                     Profile profile = profileService.getByUsername(userName);
-
-                    Feedback newFeedback = Feedback.builder()
-                            .description(parameters[1])
-                            .pathFile(photo.getPath())
-                            .owner(profile)
-                            .build();
+                    Feedback newFeedback = feedbackService.mapToFeedback(text, profile, photo.getPath());
 
                     sendPhoto.setChatId(String.valueOf(chatId));
                     sendPhoto.setCaption(feedbackService.create(newFeedback).toString());
                     sendPhoto.setPhoto(new InputFile(new File(newFeedback.getPathFile())));
-                } else {
+                } catch (RuntimeException e) {
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
@@ -548,9 +539,7 @@ public class BotService {
             case "view_products_btn":
             case "back":
                 sendPhoto.setChatId(String.valueOf(chatId));
-                sendPhoto.setCaption("Я помогу вам сделать выбор при оформлении заказа.\n" +
-                        "Можно нажать \"Прайслист\" и вы увидите, описание работ, выполняемых на индивидуальных условиях \n" +
-                        "Кнопка \"Товары в наличии\" покажет, какие уже готовые работы вы можете заказать прямо сейчас");
+                sendPhoto.setCaption(CommandMessage.VIEW_PRODUCTS.label);
                 sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 sendPhoto.setReplyMarkup(Button.getProductButton());
 
@@ -784,7 +773,7 @@ public class BotService {
                 sendPhoto = pagedFeedback(chatId, userName, 6);
                 break;
 
-                //Сделать заказ
+            //Сделать заказ
             case "make_order_btn":
                 sendPhoto.setChatId(String.valueOf(chatId));
                 sendPhoto.setCaption(CommandMessage.MAKE_ORDER.label);

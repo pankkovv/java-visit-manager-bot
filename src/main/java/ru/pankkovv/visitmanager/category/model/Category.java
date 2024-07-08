@@ -21,7 +21,9 @@ public class Category {
 
     @Override
     public String toString() {
-        return "id: " + id + "\n\n" +
-                "Имя: " + name + "\n\n";
+        return "id: " + id +
+                "\n" +
+                "Имя: " + name +
+                "\n\n";
     }
 }
