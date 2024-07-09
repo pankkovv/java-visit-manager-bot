@@ -1,6 +1,7 @@
 package ru.pankkovv.visitmanager.bot.service;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
@@ -9,11 +10,11 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import ru.pankkovv.visitmanager.bot.message.ButtonData;
 import ru.pankkovv.visitmanager.bot.message.CommandMessage;
-import ru.pankkovv.visitmanager.bot.message.ExceptionMessage;
 import ru.pankkovv.visitmanager.bot.model.Button;
 import ru.pankkovv.visitmanager.category.model.Category;
 import ru.pankkovv.visitmanager.category.service.CategoryService;
 import ru.pankkovv.visitmanager.exception.EntityNotFoundException;
+import ru.pankkovv.visitmanager.exception.ExceptionMessage;
 import ru.pankkovv.visitmanager.feedback.model.Feedback;
 import ru.pankkovv.visitmanager.feedback.service.FeedbackService;
 import ru.pankkovv.visitmanager.product.model.Product;
@@ -30,6 +31,7 @@ import java.nio.file.Path;
 
 import static ru.pankkovv.visitmanager.bot.model.Button.*;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class BotService {
@@ -112,10 +114,18 @@ public class BotService {
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                     sendPhoto.setCaption(CommandMessage.DELETE_FORM_COMMAND.label);
 
-                } catch (IOException | EntityNotFoundException e) {
+                } catch (EntityNotFoundException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
+                    sendPhoto.setCaption(e.getMessage());
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                } catch (IOException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
+
                 break;
 
 //                Товар под заказ (полка с товарами)
@@ -128,6 +138,13 @@ public class BotService {
                     sendPhoto.setCaption(productService.create(product).toString());
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 } catch (EntityNotFoundException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
+                    sendPhoto.setCaption(e.getMessage());
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                } catch (RuntimeException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
@@ -150,6 +167,13 @@ public class BotService {
                     }
 
                 } catch (EntityNotFoundException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
+                    sendPhoto.setCaption(e.getMessage());
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                } catch (RuntimeException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
@@ -167,6 +191,13 @@ public class BotService {
                     sendPhoto.setCaption("Товар успешно удален!");
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 } catch (EntityNotFoundException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
+                    sendPhoto.setCaption(e.getMessage());
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                } catch (RuntimeException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
@@ -185,6 +216,13 @@ public class BotService {
                     sendPhoto.setCaption(feedbackService.create(newFeedback).toString());
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 } catch (EntityNotFoundException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
+                    sendPhoto.setCaption(e.getMessage());
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                } catch (RuntimeException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
@@ -213,6 +251,13 @@ public class BotService {
                     }
 
                 } catch (EntityNotFoundException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
+                    sendPhoto.setCaption(e.getMessage());
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                } catch (RuntimeException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
@@ -230,6 +275,13 @@ public class BotService {
                     sendPhoto.setCaption("Отзыв успешно удален!");
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 } catch (EntityNotFoundException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
+                    sendPhoto.setCaption(e.getMessage());
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                } catch (RuntimeException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
@@ -247,6 +299,13 @@ public class BotService {
                     sendPhoto.setCaption(categoryService.create(newCategory).toString());
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 } catch (EntityNotFoundException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
+                    sendPhoto.setCaption(e.getMessage());
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                } catch (RuntimeException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
@@ -270,6 +329,13 @@ public class BotService {
                     sendPhoto.setCaption("Категория успешно удален!");
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 } catch (EntityNotFoundException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
+                    sendPhoto.setCaption(e.getMessage());
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                } catch (RuntimeException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
@@ -338,6 +404,13 @@ public class BotService {
                     sendPhoto.setCaption(productService.create(product).toString());
                     sendPhoto.setPhoto(new InputFile(new File(product.getPathFile())));
                 } catch (EntityNotFoundException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
+                    sendPhoto.setCaption(e.getMessage());
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                } catch (RuntimeException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
@@ -357,6 +430,13 @@ public class BotService {
                     sendPhoto.setPhoto(new InputFile(new File(product.getPathFile())));
 
                 } catch (EntityNotFoundException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
+                    sendPhoto.setCaption(e.getMessage());
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                } catch (RuntimeException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
@@ -376,6 +456,13 @@ public class BotService {
                     sendPhoto.setCaption(feedbackService.create(newFeedback).toString());
                     sendPhoto.setPhoto(new InputFile(new File(newFeedback.getPathFile())));
                 } catch (EntityNotFoundException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
+                    sendPhoto.setCaption(e.getMessage());
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                } catch (RuntimeException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
@@ -401,6 +488,13 @@ public class BotService {
                     sendPhoto.setPhoto(new InputFile(new File(feedback.getPathFile())));
 
                 } catch (EntityNotFoundException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
+                    sendPhoto.setCaption(e.getMessage());
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                } catch (RuntimeException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
@@ -796,7 +890,9 @@ public class BotService {
             }
 
         } catch (IndexOutOfBoundsException e) {
-            sendPhoto.setCaption("Извините, похоже данный товар не получилось найти :(");
+            log.error("Error occurred: " + e.getMessage());
+
+            sendPhoto.setCaption(ExceptionMessage.PRODUCT_NOT_FOUND.label);
             sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
 
             if (paginationOrder == 1) {
@@ -804,6 +900,11 @@ public class BotService {
             } else {
                 sendPhoto.setReplyMarkup(Button.getNumberOrderButton(paginationOrder * 7));
             }
+        } catch (RuntimeException e) {
+            log.error("Error occurred: " + e.getMessage());
+
+            sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
+            sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
         }
 
         return sendPhoto;
@@ -841,7 +942,9 @@ public class BotService {
             }
 
         } catch (IndexOutOfBoundsException e) {
-            sendPhoto.setCaption("Извините, похоже данный товар не получилось найти :(");
+            log.error("Error occurred: " + e.getMessage());
+
+            sendPhoto.setCaption(ExceptionMessage.PRODUCT_NOT_FOUND.label);
             sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
 
             if (paginationStock == 1) {
@@ -849,6 +952,11 @@ public class BotService {
             } else {
                 sendPhoto.setReplyMarkup(Button.getNumberStockButton(paginationStock * 7));
             }
+        } catch (RuntimeException e) {
+            log.error("Error occurred: " + e.getMessage());
+
+            sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
+            sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
         }
 
         return sendPhoto;
@@ -886,7 +994,9 @@ public class BotService {
             }
 
         } catch (IndexOutOfBoundsException e) {
-            sendPhoto.setCaption("Извините, похоже данный товар не получилось найти :(");
+            log.error("Error occurred: " + e.getMessage());
+
+            sendPhoto.setCaption(ExceptionMessage.FEEDBACK_NOT_FOUND.label);
             sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
 
             if (paginationFeedback == 1) {
@@ -894,6 +1004,11 @@ public class BotService {
             } else {
                 sendPhoto.setReplyMarkup(Button.getNumberFeedbackButton(paginationFeedback * 7));
             }
+        } catch (RuntimeException e) {
+            log.error("Error occurred: " + e.getMessage());
+
+            sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
+            sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
         }
 
         return sendPhoto;
