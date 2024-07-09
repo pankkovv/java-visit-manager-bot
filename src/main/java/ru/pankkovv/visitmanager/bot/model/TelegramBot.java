@@ -99,7 +99,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
 
         } catch (TelegramApiException e) {
-            throw new RuntimeException();
+            throw new RuntimeException(e.getMessage());
         }
     }
 }
