@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ru.pankkovv.visitmanager.exception.EntityNotFoundException;
+import ru.pankkovv.visitmanager.exception.ExceptionMessage;
 import ru.pankkovv.visitmanager.feedback.model.Feedback;
 import ru.pankkovv.visitmanager.feedback.repository.FeedbackRepository;
 import ru.pankkovv.visitmanager.profile.model.Profile;
@@ -29,7 +31,7 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     public Feedback getById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new RuntimeException());
+        return repository.findById(id).orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.FEEDBACK_NOT_FOUND.label));
     }
 
     @Override

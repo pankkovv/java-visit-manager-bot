@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.pankkovv.visitmanager.category.model.Category;
+import ru.pankkovv.visitmanager.exception.EntityNotFoundException;
+import ru.pankkovv.visitmanager.exception.ExceptionMessage;
 import ru.pankkovv.visitmanager.product.model.Product;
 import ru.pankkovv.visitmanager.product.model.Type;
 import ru.pankkovv.visitmanager.product.repository.ProductRepository;
@@ -36,7 +38,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product getById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new RuntimeException());
+        return repository.findById(id).orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND.label));
     }
 
     @Override
