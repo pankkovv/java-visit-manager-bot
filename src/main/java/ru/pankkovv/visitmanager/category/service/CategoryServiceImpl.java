@@ -5,6 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.pankkovv.visitmanager.category.model.Category;
 import ru.pankkovv.visitmanager.category.repository.CategoryRepository;
+import ru.pankkovv.visitmanager.utils.Utils;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -23,7 +26,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void delete(Long id) {
+    public void deleteById(Long id) {
         repository.deleteById(id);
     }
 
@@ -35,5 +38,30 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category getByName(String name) {
         return repository.getCategoriesByName(name.toLowerCase()).orElseThrow(() -> new RuntimeException());
+    }
+
+    @Override
+    public List<Category> getAll() {
+        return repository.findAll();
+    }
+
+    @Override
+    public Category mapToCategory(String text) {
+        String[] parameters = Utils.getParameters(text);
+
+        if (parameters.length == 2) {
+            return Category.builder()
+                    .name(parameters[1])
+                    .build();
+        } else {
+            throw new RuntimeException();
+        }
+    }
+
+    @Override
+    public String mapToListCategoryDto(String text) {
+        return text.replaceAll("\\[", "")
+                .replaceAll("]", "")
+                .replaceAll(", ", "");
     }
 }

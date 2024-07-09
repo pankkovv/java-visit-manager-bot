@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.pankkovv.visitmanager.feedback.model.Feedback;
 import ru.pankkovv.visitmanager.feedback.repository.FeedbackRepository;
+import ru.pankkovv.visitmanager.profile.model.Profile;
+import ru.pankkovv.visitmanager.utils.Utils;
 
 import java.util.List;
 
@@ -38,5 +40,38 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     public void deleteById(Long id) {
         repository.deleteById(id);
+    }
+
+    @Override
+    public Feedback mapToFeedback(String text, Profile profile) {
+        String[] parameters = Utils.getParameters(text);
+
+        if (parameters.length == 2) {
+
+            return Feedback.builder()
+                    .description(parameters[1])
+                    .owner(profile)
+                    .build();
+
+        } else {
+            throw new RuntimeException();
+        }
+    }
+
+    @Override
+    public Feedback mapToFeedback(String text, Profile profile, String pathFile) {
+        String[] parameters = Utils.getParameters(text);
+
+        if (parameters.length == 2) {
+
+            return Feedback.builder()
+                    .description(parameters[1])
+                    .pathFile(pathFile)
+                    .owner(profile)
+                    .build();
+
+        } else {
+            throw new RuntimeException();
+        }
     }
 }

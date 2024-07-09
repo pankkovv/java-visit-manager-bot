@@ -44,7 +44,8 @@ public enum ButtonData {
     SIX_FEEDBACK("six_feedback"),
     SEVEN_FEEDBACK("seven_feedback"),
     NEXT_FEEDBACK("next_feedback"),
-    PREV_FEEDBACK("prev_feedback"),;
+    PREV_FEEDBACK("prev_feedback"),
+    ;
 
 
     public final String label;

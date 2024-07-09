@@ -8,13 +8,13 @@ public enum ButtonMessage {
     COMMAND_FEEDBACK("Команды для отзывов"),
     COMMAND_CATEGORY("Команды для категорий"),
     BACK_ALL_COMMAND("Назад"),
-    ABOUT_ME("Обо мне"),
-    VIEW_PRODUCTS("Товары"),
-    VIEW_PRODUCTS_ORDER("Прайслист"),
+    ABOUT_ME("Обо мне \uD83D\uDC69\u200D\uD83C\uDFA8"),
+    VIEW_PRODUCTS("Товары \uD83D\uDECD\uFE0F"),
+    VIEW_PRODUCTS_ORDER("Товары на заказ"),
     VIEW_PRODUCTS_STOCK("Товары в наличии"),
     BACK("Назад"),
-    VIEW_FEEDBACKS("Отзывы"),
-    MAKE_ORDER("Оформить заказ");
+    VIEW_FEEDBACKS("Отзывы \uD83E\uDD70"),
+    MAKE_ORDER("Оформить заказ  \uD83D\uDCB8");
 
     public final String label;
 

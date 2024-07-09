@@ -44,7 +44,7 @@ public class Product {
     }
 
     public String toStringDto() {
-        return  name + "\n\n" +
+        return name + "\n\n" +
                 description + "\n\n" +
                 "Стоимость: " + price + " ₽";
     }
