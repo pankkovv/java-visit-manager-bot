@@ -13,6 +13,7 @@ import ru.pankkovv.visitmanager.bot.message.ExceptionMessage;
 import ru.pankkovv.visitmanager.bot.model.Button;
 import ru.pankkovv.visitmanager.category.model.Category;
 import ru.pankkovv.visitmanager.category.service.CategoryService;
+import ru.pankkovv.visitmanager.exception.EntityNotFoundException;
 import ru.pankkovv.visitmanager.feedback.model.Feedback;
 import ru.pankkovv.visitmanager.feedback.service.FeedbackService;
 import ru.pankkovv.visitmanager.product.model.Product;
@@ -111,13 +112,13 @@ public class BotService {
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                     sendPhoto.setCaption(CommandMessage.DELETE_FORM_COMMAND.label);
 
-                } catch (IOException e) {
+                } catch (IOException | EntityNotFoundException e) {
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
                 break;
 
-//                Прайслист (полка с товарами)
+//                Товар под заказ (полка с товарами)
             case "создать-товар":
                 try {
                     Profile profile = profileService.getByUsername(userName);
@@ -126,7 +127,7 @@ public class BotService {
 
                     sendPhoto.setCaption(productService.create(product).toString());
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
-                } catch (RuntimeException e) {
+                } catch (EntityNotFoundException e) {
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
@@ -138,33 +139,7 @@ public class BotService {
             case "редактировать-товар":
                 try {
                     Long id = Long.parseLong(parameters[1]);
-                    Product product = productService.getById(id);
-
-                    for (String newPar : parameters) {
-                        if (newPar.toLowerCase().contains("имя:")) {
-                            String name = Utils.getParametersUpdate(newPar);
-                            product.setName(name);
-                        } else if (newPar.toLowerCase().contains("описание:")) {
-                            String description = Utils.getParametersUpdate(newPar);
-                            product.setDescription(description);
-                        } else if (newPar.toLowerCase().contains("цена:")) {
-                            Long price = Long.parseLong(Utils.getParametersUpdate(newPar));
-                            product.setPrice(price);
-                        } else if (newPar.toLowerCase().contains("категория:")) {
-                            String catName = Utils.getParametersUpdate(newPar);
-                            Category category = categoryService.getByName(catName.toLowerCase());
-                            product.setCategory(category);
-                        } else if (newPar.toLowerCase().contains("тип:")) {
-                            String typeName = Utils.getParametersUpdate(newPar);
-                            Type[] types = Type.values();
-
-                            for (Type newType : types) {
-                                if (newType.label.equals(typeName)) {
-                                    product.setType(newType);
-                                }
-                            }
-                        }
-                    }
+                    Product product = updateProduct(productService.getById(id), parameters);
 
                     sendPhoto.setCaption(productService.update(product).toString());
 
@@ -174,7 +149,7 @@ public class BotService {
                         sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                     }
 
-                } catch (RuntimeException e) {
+                } catch (EntityNotFoundException e) {
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
@@ -191,7 +166,7 @@ public class BotService {
 
                     sendPhoto.setCaption("Товар успешно удален!");
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
-                } catch (RuntimeException e) {
+                } catch (EntityNotFoundException e) {
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
@@ -209,7 +184,7 @@ public class BotService {
                     sendPhoto.setChatId(String.valueOf(chatId));
                     sendPhoto.setCaption(feedbackService.create(newFeedback).toString());
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
-                } catch (RuntimeException e) {
+                } catch (EntityNotFoundException e) {
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
@@ -237,7 +212,7 @@ public class BotService {
                         sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                     }
 
-                } catch (RuntimeException e) {
+                } catch (EntityNotFoundException e) {
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
@@ -254,7 +229,7 @@ public class BotService {
 
                     sendPhoto.setCaption("Отзыв успешно удален!");
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
-                } catch (RuntimeException e) {
+                } catch (EntityNotFoundException e) {
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
@@ -271,7 +246,7 @@ public class BotService {
                     sendPhoto.setChatId(String.valueOf(chatId));
                     sendPhoto.setCaption(categoryService.create(newCategory).toString());
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
-                } catch (RuntimeException e) {
+                } catch (EntityNotFoundException e) {
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
@@ -294,7 +269,7 @@ public class BotService {
 
                     sendPhoto.setCaption("Категория успешно удален!");
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
-                } catch (RuntimeException e) {
+                } catch (EntityNotFoundException e) {
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
@@ -362,7 +337,7 @@ public class BotService {
 
                     sendPhoto.setCaption(productService.create(product).toString());
                     sendPhoto.setPhoto(new InputFile(new File(product.getPathFile())));
-                } catch (RuntimeException e) {
+                } catch (EntityNotFoundException e) {
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
@@ -375,40 +350,13 @@ public class BotService {
             case "редактировать-товар":
                 try {
                     Long id = Long.parseLong(parameters[1]);
-                    Product product = productService.getById(id);
-
-                    for (String newPar : parameters) {
-                        if (newPar.toLowerCase().contains("имя:")) {
-                            String name = Utils.getParametersUpdate(newPar);
-                            product.setName(name);
-                        } else if (newPar.toLowerCase().contains("описание:")) {
-                            String description = Utils.getParametersUpdate(newPar);
-                            product.setDescription(description);
-                        } else if (newPar.toLowerCase().contains("цена:")) {
-                            Long price = Long.parseLong(Utils.getParametersUpdate(newPar));
-                            product.setPrice(price);
-                        } else if (newPar.toLowerCase().contains("категория:")) {
-                            String catName = Utils.getParametersUpdate(newPar);
-                            Category category = categoryService.getByName(catName.toLowerCase());
-                            product.setCategory(category);
-                        } else if (newPar.toLowerCase().contains("тип:")) {
-                            String typeName = Utils.getParametersUpdate(newPar);
-                            Type[] types = Type.values();
-
-                            for (Type newType : types) {
-                                if (newType.label.equals(typeName)) {
-                                    product.setType(newType);
-                                }
-                            }
-                        }
-                    }
-
+                    Product product = updateProduct(productService.getById(id), parameters);
                     product.setPathFile(photo.getPath());
 
                     sendPhoto.setCaption(productService.update(product).toString());
                     sendPhoto.setPhoto(new InputFile(new File(product.getPathFile())));
 
-                } catch (RuntimeException e) {
+                } catch (EntityNotFoundException e) {
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
@@ -427,7 +375,7 @@ public class BotService {
                     sendPhoto.setChatId(String.valueOf(chatId));
                     sendPhoto.setCaption(feedbackService.create(newFeedback).toString());
                     sendPhoto.setPhoto(new InputFile(new File(newFeedback.getPathFile())));
-                } catch (RuntimeException e) {
+                } catch (EntityNotFoundException e) {
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
@@ -452,7 +400,7 @@ public class BotService {
                     sendPhoto.setCaption(feedbackService.update(feedback).toString());
                     sendPhoto.setPhoto(new InputFile(new File(feedback.getPathFile())));
 
-                } catch (RuntimeException e) {
+                } catch (EntityNotFoundException e) {
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
@@ -545,7 +493,7 @@ public class BotService {
 
                 break;
 
-            // Просмотр прайслиста
+            // Просмотр товаров под заказ
             case "view_products_order_btn":
                 sizeListProductOrder = productService.getByType(Type.ORDER, Utils.paged(0, Integer.MAX_VALUE)).size();
                 sendPhoto = pagedProductOrder(chatId, userName, 0);
@@ -784,6 +732,36 @@ public class BotService {
 
 
         return sendPhoto;
+    }
+
+    private Product updateProduct(Product product, String[] parameters) {
+        for (String newPar : parameters) {
+            if (newPar.toLowerCase().contains("имя:")) {
+                String name = Utils.getParametersUpdate(newPar);
+                product.setName(name);
+            } else if (newPar.toLowerCase().contains("описание:")) {
+                String description = Utils.getParametersUpdate(newPar);
+                product.setDescription(description);
+            } else if (newPar.toLowerCase().contains("цена:")) {
+                Long price = Long.parseLong(Utils.getParametersUpdate(newPar));
+                product.setPrice(price);
+            } else if (newPar.toLowerCase().contains("категория:")) {
+                String catName = Utils.getParametersUpdate(newPar);
+                Category category = categoryService.getByName(catName.toLowerCase());
+                product.setCategory(category);
+            } else if (newPar.toLowerCase().contains("тип:")) {
+                String typeName = Utils.getParametersUpdate(newPar);
+                Type[] types = Type.values();
+
+                for (Type newType : types) {
+                    if (newType.label.equals(typeName)) {
+                        product.setType(newType);
+                    }
+                }
+            }
+        }
+
+        return product;
     }
 
     private SendPhoto pagedProductOrder(Long chatId, String userName, int from) {
