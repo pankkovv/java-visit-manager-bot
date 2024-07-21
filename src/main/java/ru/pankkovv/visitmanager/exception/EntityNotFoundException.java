@@ -1,9 +1,7 @@
 package ru.pankkovv.visitmanager.exception;
 
-public class EntityNotFoundException extends RuntimeException{
-    String message;
-
+public class EntityNotFoundException extends RuntimeException {
     public EntityNotFoundException(String message) {
-        this.message = message;
+        super(message);
     }
 }

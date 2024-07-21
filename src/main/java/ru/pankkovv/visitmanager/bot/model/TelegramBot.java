@@ -1,5 +1,6 @@
 package ru.pankkovv.visitmanager.bot.model;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
@@ -12,14 +13,15 @@ import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.pankkovv.visitmanager.bot.config.BotConfig;
-import ru.pankkovv.visitmanager.bot.message.ExceptionMessage;
 import ru.pankkovv.visitmanager.bot.service.BotService;
+import ru.pankkovv.visitmanager.exception.ExceptionMessage;
 import ru.pankkovv.visitmanager.utils.Utils;
 
 import java.io.File;
 import java.util.List;
 import java.util.Random;
 
+@Slf4j
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
     private final BotConfig config;
@@ -99,6 +101,8 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
 
         } catch (TelegramApiException e) {
+            log.error("Error occurred: " + e.getMessage());
+
             throw new RuntimeException(e.getMessage());
         }
     }
