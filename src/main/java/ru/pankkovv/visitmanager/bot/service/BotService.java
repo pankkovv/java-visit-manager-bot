@@ -1,7 +1,7 @@
 package ru.pankkovv.visitmanager.bot.service;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
@@ -31,7 +31,7 @@ import java.nio.file.Path;
 
 import static ru.pankkovv.visitmanager.bot.model.Button.*;
 
-@Slf4j
+@Log4j
 @Service
 @AllArgsConstructor
 public class BotService {
@@ -50,6 +50,8 @@ public class BotService {
 
         switch (parameters[0]) {
             case "start":
+                log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
+
                 sendPhoto.setChatId(String.valueOf(chatId));
                 sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 sendPhoto.setCaption(CommandMessage.START.label);
@@ -57,6 +59,8 @@ public class BotService {
                 break;
 
             case "help":
+                log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
+
                 if (profileService.containsProfile(userName)) {
                     sendPhoto.setCaption(CommandMessage.HELP_ADMIN.label);
                 } else {
@@ -69,6 +73,8 @@ public class BotService {
                 break;
 
             case "создать-анкету":
+                log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
+
                 if (parameters.length == 2) {
                     Profile newProfile = Profile.builder()
                             .username(userName)
@@ -87,6 +93,8 @@ public class BotService {
                 break;
 
             case "редактировать-анкету":
+                log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
+
                 if (parameters.length == 2) {
                     Profile updateProfile = profileService.getByUsername(userName);
 
@@ -104,6 +112,8 @@ public class BotService {
 
             case "удалить-анкету":
                 try {
+                    log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
+
                     Profile oldProfile = profileService.getByUsername(userName);
 
                     profileService.deleteById(oldProfile.getId());
@@ -131,6 +141,8 @@ public class BotService {
 //                Товар под заказ (полка с товарами)
             case "создать-товар":
                 try {
+                    log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
+
                     Profile profile = profileService.getByUsername(userName);
                     Category category = categoryService.getByName(parameters[4]);
                     Product product = productService.mapToProduct(text, category, profile);
@@ -155,6 +167,8 @@ public class BotService {
 
             case "редактировать-товар":
                 try {
+                    log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
+
                     Long id = Long.parseLong(parameters[1]);
                     Product product = updateProduct(productService.getById(id), parameters);
 
@@ -184,6 +198,8 @@ public class BotService {
 
             case "удалить-товар":
                 try {
+                    log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
+
                     Long id = Long.parseLong(parameters[1]);
                     productService.getById(id);
                     productService.deleteById(id);
@@ -209,6 +225,8 @@ public class BotService {
             //   Обратная связь (отзывы)
             case "создать-отзыв":
                 try {
+                    log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
+
                     Profile profile = profileService.getByUsername(userName);
                     Feedback newFeedback = feedbackService.mapToFeedback(text, profile);
 
@@ -232,6 +250,8 @@ public class BotService {
 
             case "редактировать-отзыв":
                 try {
+                    log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
+
                     Long id = Long.parseLong(parameters[1]);
                     Feedback feedback = feedbackService.getById(id);
 
@@ -268,6 +288,8 @@ public class BotService {
 
             case "удалить-отзыв":
                 try {
+                    log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
+
                     Long id = Long.parseLong(parameters[1]);
                     feedbackService.getById(id);
                     feedbackService.deleteById(id);
@@ -293,6 +315,8 @@ public class BotService {
             //  Категория
             case "создать-категорию":
                 try {
+                    log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
+
                     Category newCategory = categoryService.mapToCategory(text);
 
                     sendPhoto.setChatId(String.valueOf(chatId));
@@ -314,6 +338,8 @@ public class BotService {
                 break;
 
             case "посмотреть-категории":
+                log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
+
                 sendPhoto.setChatId(String.valueOf(chatId));
                 sendPhoto.setCaption(categoryService.mapToListCategoryDto(categoryService.getAll().toString()));
                 sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
@@ -322,6 +348,8 @@ public class BotService {
 
             case "удалить-категорию":
                 try {
+                    log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
+
                     Long id = Long.parseLong(parameters[1]);
                     categoryService.getById(id);
                     categoryService.deleteById(id);
@@ -354,6 +382,8 @@ public class BotService {
 
         switch (parameters[0]) {
             case "создать-анкету":
+                log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
+
                 Profile newProfile;
 
                 if (parameters.length == 2) {
@@ -379,6 +409,8 @@ public class BotService {
                 break;
 
             case "редактировать-анкету":
+                log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
+
                 Profile updateProfile = profileService.getByUsername(userName);
 
                 if (parameters.length == 2) {
@@ -397,6 +429,8 @@ public class BotService {
 
             case "создать-товар":
                 try {
+                    log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
+
                     Profile profile = profileService.getByUsername(userName);
                     Category category = categoryService.getByName(parameters[4]);
                     Product product = productService.mapToProduct(text, category, profile, photo.getPath());
@@ -422,6 +456,8 @@ public class BotService {
 
             case "редактировать-товар":
                 try {
+                    log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
+
                     Long id = Long.parseLong(parameters[1]);
                     Product product = updateProduct(productService.getById(id), parameters);
                     product.setPathFile(photo.getPath());
@@ -449,6 +485,8 @@ public class BotService {
             //   Обратная связь (отзывы)
             case "создать-отзыв":
                 try {
+                    log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
+
                     Profile profile = profileService.getByUsername(userName);
                     Feedback newFeedback = feedbackService.mapToFeedback(text, profile, photo.getPath());
 
@@ -472,6 +510,8 @@ public class BotService {
 
             case "редактировать-отзыв":
                 try {
+                    log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
+
                     Long id = Long.parseLong(parameters[1]);
                     Feedback feedback = feedbackService.getById(id);
 
@@ -513,6 +553,8 @@ public class BotService {
 
         switch (button) {
             case "start_btn":
+                log.debug("Пользователь '" + userName + "' нажал кнопку '" + button + "'");
+
                 sendPhoto.setChatId(String.valueOf(chatId));
                 sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 sendPhoto.setCaption(CommandMessage.START.label);
@@ -520,6 +562,8 @@ public class BotService {
                 break;
 
             case "help_btn":
+                log.debug("Пользователь '" + userName + "' нажал кнопку '" + button + "'");
+
                 if (profileService.containsProfile(userName)) {
                     sendPhoto.setCaption(CommandMessage.HELP_ADMIN.label);
                     sendPhoto.setReplyMarkup(Button.getHelpAdminButton());
@@ -533,6 +577,8 @@ public class BotService {
 
                 break;
             case "command_profile_btn":
+                log.debug("Пользователь '" + userName + "' нажал кнопку '" + button + "'");
+
                 sendPhoto.setChatId(String.valueOf(chatId));
                 sendPhoto.setCaption(CommandMessage.HELP_ADMIN_COMMAND_PROFILE.label);
                 sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
@@ -540,6 +586,8 @@ public class BotService {
                 break;
 
             case "command_product_btn":
+                log.debug("Пользователь '" + userName + "' нажал кнопку '" + button + "'");
+
                 sendPhoto.setChatId(String.valueOf(chatId));
                 sendPhoto.setCaption(CommandMessage.HELP_ADMIN_COMMAND_PRODUCT.label);
                 sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
@@ -547,6 +595,8 @@ public class BotService {
                 break;
 
             case "command_feedback_btn":
+                log.debug("Пользователь '" + userName + "' нажал кнопку '" + button + "'");
+
                 sendPhoto.setChatId(String.valueOf(chatId));
                 sendPhoto.setCaption(CommandMessage.HELP_ADMIN_COMMAND_FEEDBACK.label);
                 sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
@@ -554,6 +604,8 @@ public class BotService {
                 break;
 
             case "command_category_btn":
+                log.debug("Пользователь '" + userName + "' нажал кнопку '" + button + "'");
+
                 sendPhoto.setChatId(String.valueOf(chatId));
                 sendPhoto.setCaption(CommandMessage.HELP_ADMIN_COMMAND_CATEGORY.label);
                 sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
@@ -561,10 +613,14 @@ public class BotService {
                 break;
 
             case "back_all_command_btn":
+                log.debug("Пользователь '" + userName + "' нажал кнопку '" + button + "'");
+
                 cbq.setData("help_btn");
                 return parseCommand(chatId, userName, cbq);
 
             case "about_me_btn":
+                log.debug("Пользователь '" + userName + "' нажал кнопку '" + button + "'");
+
                 if (profileService.containsProfile(userName)) {
                     sendPhoto.setCaption(profileService.getByUsername(userName).toString());
                     sendPhoto.setPhoto(new InputFile(new File(profileService.getByUsername(userName).getPathFile())));
@@ -580,6 +636,8 @@ public class BotService {
 
             case "view_products_btn":
             case "back":
+                log.debug("Пользователь '" + userName + "' нажал кнопку '" + button + "'");
+
                 sendPhoto.setChatId(String.valueOf(chatId));
                 sendPhoto.setCaption(CommandMessage.VIEW_PRODUCTS.label);
                 sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
@@ -589,12 +647,16 @@ public class BotService {
 
             // Просмотр товаров под заказ
             case "view_products_order_btn":
+                log.debug("Пользователь '" + userName + "' нажал кнопку '" + button + "'");
+
                 sizeListProductOrder = productService.getByType(Type.ORDER, Utils.paged(0, Integer.MAX_VALUE)).size();
                 sendPhoto = pagedProductOrder(chatId, userName, 0);
                 break;
 
             //Пагинация
             case "next_order":
+                log.debug("Пользователь '" + userName + "' нажал кнопку '" + button + "'");
+
                 int countOrder = sizeListProductOrder / 7;
                 EditMessageReplyMarkup editMessageReplyMarkupOrder = new EditMessageReplyMarkup();
                 editMessageReplyMarkupOrder.setMessageId(cbq.getMessage().getMessageId());
@@ -617,6 +679,8 @@ public class BotService {
                 return editMessageReplyMarkupOrder;
 
             case "prev_order":
+                log.debug("Пользователь '" + userName + "' нажал кнопку '" + button + "'");
+
                 EditMessageReplyMarkup editMessageReplyMarkupPrevOrder = new EditMessageReplyMarkup();
                 editMessageReplyMarkupPrevOrder.setMessageId(cbq.getMessage().getMessageId());
                 editMessageReplyMarkupPrevOrder.setChatId(String.valueOf(chatId));
@@ -665,12 +729,16 @@ public class BotService {
 
             //Просмотр товаров в наличии
             case "view_products_stock_btn":
+                log.debug("Пользователь '" + userName + "' нажал кнопку '" + button + "'");
+
                 sizeListProductStock = productService.getByType(Type.STOCK, Utils.paged(0, Integer.MAX_VALUE)).size();
                 sendPhoto = pagedProductStock(chatId, userName, 0);
                 break;
 
             //Пагинация
             case "next_stock":
+                log.debug("Пользователь '" + userName + "' нажал кнопку '" + button + "'");
+
                 int countStock = sizeListProductStock / 7;
                 EditMessageReplyMarkup editMessageReplyMarkupStock = new EditMessageReplyMarkup();
                 editMessageReplyMarkupStock.setMessageId(cbq.getMessage().getMessageId());
@@ -694,6 +762,8 @@ public class BotService {
                 return editMessageReplyMarkupStock;
 
             case "prev_stock":
+                log.debug("Пользователь '" + userName + "' нажал кнопку '" + button + "'");
+
                 EditMessageReplyMarkup editMessageReplyMarkupStockPrev = new EditMessageReplyMarkup();
                 editMessageReplyMarkupStockPrev.setMessageId(cbq.getMessage().getMessageId());
                 editMessageReplyMarkupStockPrev.setChatId(String.valueOf(chatId));
@@ -741,12 +811,16 @@ public class BotService {
 
             //Просмотр отзывов
             case "view_feedbacks_btn":
+                log.debug("Пользователь '" + userName + "' нажал кнопку '" + button + "'");
+
                 sizeListProductFeedback = feedbackService.getAll(Utils.paged(0, Integer.MAX_VALUE)).size();
                 sendPhoto = pagedFeedback(chatId, userName, 0);
                 break;
 
             //Пагинация
             case "next_feedback":
+                log.debug("Пользователь '" + userName + "' нажал кнопку '" + button + "'");
+
                 int countFeedback = sizeListProductFeedback / 7;
                 EditMessageReplyMarkup editMessageReplyMarkupFeedback = new EditMessageReplyMarkup();
                 editMessageReplyMarkupFeedback.setMessageId(cbq.getMessage().getMessageId());
@@ -770,6 +844,8 @@ public class BotService {
                 return editMessageReplyMarkupFeedback;
 
             case "prev_feedback":
+                log.debug("Пользователь '" + userName + "' нажал кнопку '" + button + "'");
+
                 EditMessageReplyMarkup editMessageReplyMarkupStockFeedback = new EditMessageReplyMarkup();
                 editMessageReplyMarkupStockFeedback.setMessageId(cbq.getMessage().getMessageId());
                 editMessageReplyMarkupStockFeedback.setChatId(String.valueOf(chatId));
@@ -817,6 +893,8 @@ public class BotService {
 
             //Сделать заказ
             case "make_order_btn":
+                log.debug("Пользователь '" + userName + "' нажал кнопку '" + button + "'");
+
                 sendPhoto.setChatId(String.valueOf(chatId));
                 sendPhoto.setCaption(CommandMessage.MAKE_ORDER.label);
                 sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
