@@ -690,9 +690,9 @@ public class BotService {
                             .username(userName)
                             .build();
 
-                    queueService.create(userQueue);
+                    UserQueue newUser = queueService.create(userQueue);
 
-                    sendPhoto.setCaption(CommandMessage.START_QUEUE.label + userQueue);
+                    sendPhoto.setCaption(String.format(CommandMessage.START_QUEUE.label, queueService.getQueues().indexOf(newUser) + 1));
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                     sendPhoto.setReplyMarkup(Button.getJoinQueueButton());
 
