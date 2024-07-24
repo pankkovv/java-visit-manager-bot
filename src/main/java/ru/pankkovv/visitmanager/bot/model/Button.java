@@ -146,6 +146,7 @@ public class Button {
         List<InlineKeyboardButton> rowInLineOne = new ArrayList<>();
         List<InlineKeyboardButton> rowInLineTwo = new ArrayList<>();
         List<InlineKeyboardButton> rowInLineThree = new ArrayList<>();
+        List<InlineKeyboardButton> rowInLineFour = new ArrayList<>();
 
         InlineKeyboardButton productOrderButton = new InlineKeyboardButton();
         productOrderButton.setText(ButtonMessage.VIEW_PRODUCTS_ORDER.label);
@@ -155,6 +156,10 @@ public class Button {
         productStockButton.setText(ButtonMessage.VIEW_PRODUCTS_STOCK.label);
         productStockButton.setCallbackData(ButtonData.VIEW_PRODUCTS_STOCK_BTN.label);
 
+        InlineKeyboardButton queueButton = new InlineKeyboardButton();
+        queueButton.setText(ButtonMessage.QUEUE.label);
+        queueButton.setCallbackData(ButtonData.QUEUE_BTN.label);
+
         InlineKeyboardButton startButton = new InlineKeyboardButton();
         startButton.setText(ButtonMessage.START.label);
         startButton.setCallbackData(ButtonData.START_BTN.label);
@@ -162,6 +167,65 @@ public class Button {
 
         rowInLineOne.add(productOrderButton);
         rowInLineTwo.add(productStockButton);
+        rowInLineThree.add(queueButton);
+        rowInLineFour.add(startButton);
+
+        rowsInLine.add(rowInLineOne);
+        rowsInLine.add(rowInLineTwo);
+        rowsInLine.add(rowInLineThree);
+        rowsInLine.add(rowInLineFour);
+
+        inlineKeyboardMarkup.setKeyboard(rowsInLine);
+
+        return inlineKeyboardMarkup;
+    }
+
+    public static InlineKeyboardMarkup getStartQueueButton() {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
+        List<InlineKeyboardButton> rowInLineOne = new ArrayList<>();
+        List<InlineKeyboardButton> rowInLineTwo = new ArrayList<>();
+
+        InlineKeyboardButton startQueueButton = new InlineKeyboardButton();
+        startQueueButton.setText(ButtonMessage.START_QUEUE.label);
+        startQueueButton.setCallbackData(ButtonData.START_QUEUE_BTN.label);
+
+        InlineKeyboardButton startButton = new InlineKeyboardButton();
+        startButton.setText(ButtonMessage.START.label);
+        startButton.setCallbackData(ButtonData.START_BTN.label);
+
+        rowInLineOne.add(startQueueButton);
+        rowInLineTwo.add(startButton);
+
+        rowsInLine.add(rowInLineOne);
+        rowsInLine.add(rowInLineTwo);
+
+        inlineKeyboardMarkup.setKeyboard(rowsInLine);
+
+        return inlineKeyboardMarkup;
+    }
+
+    public static InlineKeyboardMarkup getJoinQueueButton() {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
+        List<InlineKeyboardButton> rowInLineOne = new ArrayList<>();
+        List<InlineKeyboardButton> rowInLineTwo = new ArrayList<>();
+        List<InlineKeyboardButton> rowInLineThree = new ArrayList<>();
+
+        InlineKeyboardButton viewQueueButton = new InlineKeyboardButton();
+        viewQueueButton.setText(ButtonMessage.VIEW_QUEUE.label);
+        viewQueueButton.setCallbackData(ButtonData.VIEW_QUEUE_BTN.label);
+
+        InlineKeyboardButton joinQueueButton = new InlineKeyboardButton();
+        joinQueueButton.setText(ButtonMessage.JOIN_QUEUE.label);
+        joinQueueButton.setCallbackData(ButtonData.JOIN_QUEUE_BTN.label);
+
+        InlineKeyboardButton startButton = new InlineKeyboardButton();
+        startButton.setText(ButtonMessage.START.label);
+        startButton.setCallbackData(ButtonData.START_BTN.label);
+
+        rowInLineOne.add(viewQueueButton);
+        rowInLineTwo.add(joinQueueButton);
         rowInLineThree.add(startButton);
 
         rowsInLine.add(rowInLineOne);
@@ -214,7 +278,7 @@ public class Button {
 
         InlineKeyboardButton backButton = new InlineKeyboardButton();
         backButton.setText(ButtonMessage.BACK.label);
-        backButton.setCallbackData(ButtonData.BACK.label);
+        backButton.setCallbackData(ButtonData.BACK_BTN.label);
 
         InlineKeyboardButton startButton = new InlineKeyboardButton();
         startButton.setText(ButtonMessage.START.label);
@@ -331,7 +395,7 @@ public class Button {
 
         InlineKeyboardButton backButton = new InlineKeyboardButton();
         backButton.setText(ButtonMessage.BACK.label);
-        backButton.setCallbackData(ButtonData.BACK.label);
+        backButton.setCallbackData(ButtonData.BACK_BTN.label);
 
         InlineKeyboardButton startButton = new InlineKeyboardButton();
         startButton.setText(ButtonMessage.START.label);

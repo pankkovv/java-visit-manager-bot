@@ -22,6 +22,8 @@ import ru.pankkovv.visitmanager.product.model.Type;
 import ru.pankkovv.visitmanager.product.service.ProductService;
 import ru.pankkovv.visitmanager.profile.model.Profile;
 import ru.pankkovv.visitmanager.profile.service.ProfileService;
+import ru.pankkovv.visitmanager.queue.model.UserQueue;
+import ru.pankkovv.visitmanager.queue.service.QueueService;
 import ru.pankkovv.visitmanager.utils.Utils;
 
 import java.io.File;
@@ -43,6 +45,8 @@ public class BotService {
     private final CategoryService categoryService;
     @Autowired
     private final FeedbackService feedbackService;
+    @Autowired
+    private final QueueService queueService;
 
     public Object parseCommand(Long chatId, String userName, String text) {
         SendPhoto sendPhoto = new SendPhoto();
@@ -371,6 +375,34 @@ public class BotService {
                 sendPhoto.setChatId(String.valueOf(chatId));
                 sendPhoto.setReplyMarkup(Button.getStartButton());
                 break;
+
+            //Очередь
+            case "удалить-очередь":
+                try {
+                    log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
+
+                    String username = parameters[1];
+
+                    UserQueue userQueue = queueService.getByUsername(username);
+                    queueService.delete(userQueue.getId());
+
+                    sendPhoto.setCaption("Пользователь успешно удален из очереди!");
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                } catch (EntityNotFoundException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
+                    sendPhoto.setCaption(e.getMessage());
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                } catch (RuntimeException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
+                    sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                }
+
+                sendPhoto.setChatId(String.valueOf(chatId));
+                sendPhoto.setReplyMarkup(Button.getStartButton());
+                break;
         }
 
         return sendPhoto;
@@ -634,6 +666,90 @@ public class BotService {
 
                 break;
 
+            case "queue_btn":
+                log.debug("Пользователь '" + userName + "' нажал кнопку '" + button + "'");
+
+                sendPhoto.setChatId(String.valueOf(chatId));
+                sendPhoto.setCaption(CommandMessage.QUEUE.label);
+                sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+
+                if (queueService.contains(userName)) {
+                    sendPhoto.setReplyMarkup(Button.getJoinQueueButton());
+                } else {
+                    sendPhoto.setReplyMarkup(Button.getStartQueueButton());
+                }
+
+                break;
+
+            case "start_queue_btn":
+                log.debug("Пользователь '" + userName + "' нажал кнопку '" + button + "'");
+
+                try {
+                    UserQueue userQueue = UserQueue.builder()
+                            .chatId(chatId)
+                            .username(userName)
+                            .build();
+
+                    queueService.create(userQueue);
+
+                    sendPhoto.setCaption(CommandMessage.START_QUEUE.label + userQueue);
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                    sendPhoto.setReplyMarkup(Button.getJoinQueueButton());
+
+                } catch (RuntimeException e) {
+                    sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                    sendPhoto.setReplyMarkup(Button.getStartQueueButton());
+                }
+
+                sendPhoto.setChatId(String.valueOf(chatId));
+
+                break;
+
+            case "view_queue_btn":
+                log.debug("Пользователь '" + userName + "' нажал кнопку '" + button + "'");
+
+                try {
+                    UserQueue userSearch = queueService.getByUsername(userName);
+
+                    sendPhoto.setCaption(String.format(CommandMessage.VIEW_QUEUE.label,
+                            queueService.getQueues().indexOf(userSearch) + 1));
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                    sendPhoto.setReplyMarkup(Button.getJoinQueueButton());
+                } catch (EntityNotFoundException e) {
+                    sendPhoto.setCaption(e.getMessage());
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                    sendPhoto.setReplyMarkup(Button.getJoinQueueButton());
+                }
+
+                sendPhoto.setChatId(String.valueOf(chatId));
+
+
+                break;
+
+            case "join_queue_btn":
+                log.debug("Пользователь '" + userName + "' нажал кнопку '" + button + "'");
+
+                try {
+                    UserQueue userQueue = queueService.getByUsername(userName);
+
+                    queueService.delete(userQueue.getId());
+
+                    sendPhoto.setCaption(CommandMessage.JOIN_QUEUE.label);
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                    sendPhoto.setReplyMarkup(Button.getStartQueueButton());
+
+                } catch (EntityNotFoundException e) {
+                    sendPhoto.setCaption(e.getMessage());
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                    sendPhoto.setReplyMarkup(Button.getProductButton());
+                }
+
+                sendPhoto.setChatId(String.valueOf(chatId));
+
+                break;
+
+
             case "view_products_btn":
             case "back":
                 log.debug("Пользователь '" + userName + "' нажал кнопку '" + button + "'");
@@ -643,6 +759,16 @@ public class BotService {
                 sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 sendPhoto.setReplyMarkup(Button.getProductButton());
 
+                break;
+
+            //Сделать заказ
+            case "make_order_btn":
+                log.debug("Пользователь '" + userName + "' нажал кнопку '" + button + "'");
+
+                sendPhoto.setChatId(String.valueOf(chatId));
+                sendPhoto.setCaption(CommandMessage.MAKE_ORDER.label);
+                sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                sendPhoto.setReplyMarkup(Button.getProductButton());
                 break;
 
             // Просмотр товаров под заказ
@@ -889,16 +1015,6 @@ public class BotService {
 
             case "seven_feedback":
                 sendPhoto = pagedFeedback(chatId, userName, 6);
-                break;
-
-            //Сделать заказ
-            case "make_order_btn":
-                log.debug("Пользователь '" + userName + "' нажал кнопку '" + button + "'");
-
-                sendPhoto.setChatId(String.valueOf(chatId));
-                sendPhoto.setCaption(CommandMessage.MAKE_ORDER.label);
-                sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
-                sendPhoto.setReplyMarkup(Button.getProductButton());
                 break;
         }
 
