@@ -126,7 +126,7 @@ public class BotService {
                     sendPhoto.setChatId(String.valueOf(chatId));
                     sendPhoto.setReplyMarkup(Button.getStartButton());
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
-                    sendPhoto.setCaption(CommandMessage.DELETE_FORM_COMMAND.label);
+                    sendPhoto.setCaption(CommandMessage.TRY_DELETE_FORM_COMMAND.label);
 
                 } catch (EntityNotFoundException e) {
                     log.error("Error occurred: " + e.getMessage());
@@ -208,7 +208,7 @@ public class BotService {
                     productService.getById(id);
                     productService.deleteById(id);
 
-                    sendPhoto.setCaption("Товар успешно удален!");
+                    sendPhoto.setCaption(CommandMessage.TRY_DELETE_PRODUCT.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 } catch (EntityNotFoundException e) {
                     log.error("Error occurred: " + e.getMessage());
@@ -298,7 +298,7 @@ public class BotService {
                     feedbackService.getById(id);
                     feedbackService.deleteById(id);
 
-                    sendPhoto.setCaption("Отзыв успешно удален!");
+                    sendPhoto.setCaption(CommandMessage.TRY_DELETE_FEEDBACK.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 } catch (EntityNotFoundException e) {
                     log.error("Error occurred: " + e.getMessage());
@@ -358,7 +358,7 @@ public class BotService {
                     categoryService.getById(id);
                     categoryService.deleteById(id);
 
-                    sendPhoto.setCaption("Категория успешно удален!");
+                    sendPhoto.setCaption(CommandMessage.TRY_DELETE_CATEGORY.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 } catch (EntityNotFoundException e) {
                     log.error("Error occurred: " + e.getMessage());
@@ -386,7 +386,7 @@ public class BotService {
                     UserQueue userQueue = queueService.getByUsername(username);
                     queueService.delete(userQueue.getId());
 
-                    sendPhoto.setCaption("Пользователь успешно удален из очереди!");
+                    sendPhoto.setCaption(CommandMessage.TRY_DELETE_QUEUE.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 } catch (EntityNotFoundException e) {
                     log.error("Error occurred: " + e.getMessage());
