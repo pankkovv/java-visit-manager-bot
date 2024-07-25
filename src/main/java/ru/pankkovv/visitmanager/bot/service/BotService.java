@@ -685,18 +685,28 @@ public class BotService {
                 log.debug("Пользователь '" + userName + "' нажал кнопку '" + button + "'");
 
                 try {
-                    UserQueue userQueue = UserQueue.builder()
-                            .chatId(chatId)
-                            .username(userName)
-                            .build();
+                    if (queueService.contains(userName)) {
+                        UserQueue userSearch = queueService.getByUsername(userName);
 
-                    UserQueue newUser = queueService.create(userQueue);
+                        sendPhoto.setCaption(String.format(CommandMessage.VIEW_QUEUE.label,
+                                queueService.getQueues().indexOf(userSearch) + 1));
+                        sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                        sendPhoto.setReplyMarkup(Button.getJoinQueueButton());
+                    } else {
+                        UserQueue userQueue = UserQueue.builder()
+                                .chatId(chatId)
+                                .username(userName)
+                                .build();
 
-                    sendPhoto.setCaption(String.format(CommandMessage.START_QUEUE.label, queueService.getQueues().indexOf(newUser) + 1));
-                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
-                    sendPhoto.setReplyMarkup(Button.getJoinQueueButton());
+                        UserQueue newUser = queueService.create(userQueue);
 
+                        sendPhoto.setCaption(String.format(CommandMessage.START_QUEUE.label, queueService.getQueues().indexOf(newUser) + 1));
+                        sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                        sendPhoto.setReplyMarkup(Button.getJoinQueueButton());
+                    }
                 } catch (RuntimeException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
                     sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                     sendPhoto.setReplyMarkup(Button.getStartQueueButton());
@@ -717,6 +727,8 @@ public class BotService {
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                     sendPhoto.setReplyMarkup(Button.getJoinQueueButton());
                 } catch (EntityNotFoundException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
                     sendPhoto.setCaption(e.getMessage());
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                     sendPhoto.setReplyMarkup(Button.getJoinQueueButton());
@@ -740,6 +752,8 @@ public class BotService {
                     sendPhoto.setReplyMarkup(Button.getStartQueueButton());
 
                 } catch (EntityNotFoundException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
                     sendPhoto.setCaption(e.getMessage());
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                     sendPhoto.setReplyMarkup(Button.getProductButton());
