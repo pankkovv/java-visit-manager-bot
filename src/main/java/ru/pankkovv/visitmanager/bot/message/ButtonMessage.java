@@ -14,7 +14,11 @@ public enum ButtonMessage {
     VIEW_PRODUCTS_STOCK("Товары в наличии"),
     BACK("Назад"),
     VIEW_FEEDBACKS("Отзывы \uD83E\uDD70"),
-    MAKE_ORDER("Оформить заказ  \uD83D\uDCB8");
+    MAKE_ORDER("Оформить заказ  \uD83D\uDCB8"),
+    QUEUE("Очередь"),
+    START_QUEUE("Попасть в очередь"),
+    JOIN_QUEUE("Выйти из очереди"),
+    VIEW_QUEUE("Посмотреть номер в очереди");
 
     public final String label;
 

@@ -14,7 +14,11 @@ public enum ButtonData {
     VIEW_PRODUCTS_BTN("view_products_btn"),
     VIEW_PRODUCTS_ORDER_BTN("view_products_order_btn"),
     VIEW_PRODUCTS_STOCK_BTN("view_products_stock_btn"),
-    BACK("back"),
+    BACK_BTN("back"),
+    QUEUE_BTN("queue_btn"),
+    START_QUEUE_BTN("start_queue_btn"),
+    JOIN_QUEUE_BTN("join_queue_btn"),
+    VIEW_QUEUE_BTN("view_queue_btn"),
     //Пагинация для товаров с типом ORDER
     ONE_ORDER("one_order"),
     TWO_ORDER("two_order"),
@@ -44,8 +48,7 @@ public enum ButtonData {
     SIX_FEEDBACK("six_feedback"),
     SEVEN_FEEDBACK("seven_feedback"),
     NEXT_FEEDBACK("next_feedback"),
-    PREV_FEEDBACK("prev_feedback"),
-    ;
+    PREV_FEEDBACK("prev_feedback");
 
 
     public final String label;
