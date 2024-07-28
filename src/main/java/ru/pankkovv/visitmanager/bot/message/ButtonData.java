@@ -7,6 +7,7 @@ public enum ButtonData {
     COMMAND_PRODUCT_BTN("command_product_btn"),
     COMMAND_FEEDBACK_BTN("command_feedback_btn"),
     COMMAND_CATEGORY_BTN("command_category_btn"),
+    COMMAND_QUEUE_BTN("command_queue_btn"),
     BACK_ALL_COMMAND_BTN("back_all_command_btn"),
     ABOUT_ME_BTN("about_me_btn"),
     MAKE_ORDER_BTN("make_order_btn"),

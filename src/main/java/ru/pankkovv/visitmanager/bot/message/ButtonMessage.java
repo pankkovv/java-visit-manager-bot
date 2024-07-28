@@ -7,6 +7,7 @@ public enum ButtonMessage {
     COMMAND_PRODUCT("Команды для товаров"),
     COMMAND_FEEDBACK("Команды для отзывов"),
     COMMAND_CATEGORY("Команды для категорий"),
+    COMMAND_QUEUE("Команды для очереди"),
     BACK_ALL_COMMAND("Назад"),
     ABOUT_ME("Обо мне \uD83D\uDC69\u200D\uD83C\uDFA8"),
     VIEW_PRODUCTS("Товары \uD83D\uDECD\uFE0F"),
