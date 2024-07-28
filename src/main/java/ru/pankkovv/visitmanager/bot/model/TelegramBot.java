@@ -7,10 +7,7 @@ import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.PhotoSize;
-import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.*;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.pankkovv.visitmanager.bot.config.BotConfig;
 import ru.pankkovv.visitmanager.bot.service.BotService;
@@ -103,7 +100,17 @@ public class TelegramBot extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             log.error("Error occurred: " + e.getMessage());
 
-            throw new RuntimeException(e.getMessage());
+            SendPhoto errorMessage = new SendPhoto();
+            errorMessage.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
+            errorMessage.setPhoto(new InputFile(new File("img/error.jpg")));
+            errorMessage.setChatId(String.valueOf(chatId));
+            errorMessage.setReplyMarkup(Button.getStartButton());
+
+            try {
+                execute(errorMessage);
+            } catch (TelegramApiException ex) {
+                throw new RuntimeException(e.getMessage());
+            }
         }
     }
 }
