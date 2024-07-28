@@ -377,6 +377,33 @@ public class BotService {
                 break;
 
             //Очередь
+            case "посмотреть-очередь":
+                if(!queueService.getQueues().isEmpty()){
+                    log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
+
+                    StringBuilder actualQueues = new StringBuilder();
+                    actualQueues.append("Очередь заказов (позиция - клиент)\n\n");
+
+                    for (UserQueue queue : queueService.getQueues()){
+                        actualQueues.append(queueService.getQueues().indexOf(queue) + 1)
+                                .append("   ——   ")
+                                .append(queue.getUsername())
+                                .append("\n");
+                    }
+
+                    sendPhoto.setCaption(actualQueues.toString());
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                } else {
+                    log.error("Error occurred: " + ExceptionMessage.QUEUE_IS_EMPTY.label);
+
+                    sendPhoto.setCaption(ExceptionMessage.QUEUE_IS_EMPTY.label);
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                }
+
+                sendPhoto.setChatId(String.valueOf(chatId));
+                sendPhoto.setReplyMarkup(Button.getStartButton());
+                break;
+
             case "удалить-очередь":
                 try {
                     log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
@@ -606,8 +633,8 @@ public class BotService {
 
                 sendPhoto.setChatId(String.valueOf(chatId));
                 sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
-
                 break;
+
             case "command_profile_btn":
                 log.debug("Пользователь '" + userName + "' нажал кнопку '" + button + "'");
 
@@ -640,6 +667,15 @@ public class BotService {
 
                 sendPhoto.setChatId(String.valueOf(chatId));
                 sendPhoto.setCaption(CommandMessage.HELP_ADMIN_COMMAND_CATEGORY.label);
+                sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                sendPhoto.setReplyMarkup(Button.getBackAllCommandButton());
+                break;
+
+            case "command_queue_btn":
+                log.debug("Пользователь '" + userName + "' нажал кнопку '" + button + "'");
+
+                sendPhoto.setChatId(String.valueOf(chatId));
+                sendPhoto.setCaption(CommandMessage.HELP_ADMIN_COMMAND_QUEUE.label);
                 sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 sendPhoto.setReplyMarkup(Button.getBackAllCommandButton());
                 break;

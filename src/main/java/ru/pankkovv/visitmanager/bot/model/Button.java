@@ -77,6 +77,7 @@ public class Button {
         List<InlineKeyboardButton> rowInLineThree = new ArrayList<>();
         List<InlineKeyboardButton> rowInLineFour = new ArrayList<>();
         List<InlineKeyboardButton> rowInLineFive = new ArrayList<>();
+        List<InlineKeyboardButton> rowInLineSix = new ArrayList<>();
 
         InlineKeyboardButton commandProfile = new InlineKeyboardButton();
         commandProfile.setText(ButtonMessage.COMMAND_PROFILE.label);
@@ -94,6 +95,10 @@ public class Button {
         commandCategory.setText(ButtonMessage.COMMAND_CATEGORY.label);
         commandCategory.setCallbackData(ButtonData.COMMAND_CATEGORY_BTN.label);
 
+        InlineKeyboardButton commandQueue = new InlineKeyboardButton();
+        commandQueue.setText(ButtonMessage.COMMAND_QUEUE.label);
+        commandQueue.setCallbackData(ButtonData.COMMAND_QUEUE_BTN.label);
+
         InlineKeyboardButton startButton = new InlineKeyboardButton();
         startButton.setText(ButtonMessage.START.label);
         startButton.setCallbackData(ButtonData.START_BTN.label);
@@ -102,13 +107,15 @@ public class Button {
         rowInLineTwo.add(commandProduct);
         rowInLineThree.add(commandFeedback);
         rowInLineFour.add(commandCategory);
-        rowInLineFive.add(startButton);
+        rowInLineFive.add(commandQueue);
+        rowInLineSix.add(startButton);
 
         rowsInLine.add(rowInLineOne);
         rowsInLine.add(rowInLineTwo);
         rowsInLine.add(rowInLineThree);
         rowsInLine.add(rowInLineFour);
         rowsInLine.add(rowInLineFive);
+        rowsInLine.add(rowInLineSix);
 
         inlineKeyboardMarkup.setKeyboard(rowsInLine);
 
