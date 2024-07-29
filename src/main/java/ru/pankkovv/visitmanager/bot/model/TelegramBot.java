@@ -100,16 +100,18 @@ public class TelegramBot extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             log.error("Error occurred: " + e.getMessage());
 
-            SendPhoto errorMessage = new SendPhoto();
-            errorMessage.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
-            errorMessage.setPhoto(new InputFile(new File("img/error.jpg")));
-            errorMessage.setChatId(String.valueOf(chatId));
-            errorMessage.setReplyMarkup(Button.getStartButton());
+            if(e.getMessage().equals("ChatId parameter can't be empty")){
+                SendPhoto errorMessage = new SendPhoto();
+                errorMessage.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
+                errorMessage.setPhoto(new InputFile(new File("img/error.jpg")));
+                errorMessage.setChatId(String.valueOf(chatId));
+                errorMessage.setReplyMarkup(Button.getStartButton());
 
-            try {
-                execute(errorMessage);
-            } catch (TelegramApiException ex) {
-                throw new RuntimeException(e.getMessage());
+                try {
+                    execute(errorMessage);
+                } catch (TelegramApiException ex) {
+                    throw new RuntimeException(e.getMessage());
+                }
             }
         }
     }
