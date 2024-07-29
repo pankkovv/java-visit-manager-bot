@@ -15,7 +15,7 @@ public enum ButtonData {
     VIEW_PRODUCTS_BTN("view_products_btn"),
     VIEW_PRODUCTS_ORDER_BTN("view_products_order_btn"),
     VIEW_PRODUCTS_STOCK_BTN("view_products_stock_btn"),
-    BACK_BTN("back"),
+    BACK_BTN("back_btn"),
     QUEUE_BTN("queue_btn"),
     START_QUEUE_BTN("start_queue_btn"),
     JOIN_QUEUE_BTN("join_queue_btn"),
