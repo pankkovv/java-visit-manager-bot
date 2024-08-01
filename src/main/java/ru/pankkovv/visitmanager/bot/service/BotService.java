@@ -68,13 +68,14 @@ public class BotService {
 
                 if (profileService.containsProfile(userName)) {
                     sendPhoto.setCaption(CommandMessage.HELP_ADMIN.label);
+                    sendPhoto.setReplyMarkup(Button.getHelpAdminButton());
                 } else {
                     sendPhoto.setCaption(CommandMessage.HELP_COMMON.label);
+                    sendPhoto.setReplyMarkup(Button.getStartButton());
                 }
 
                 sendPhoto.setChatId(String.valueOf(chatId));
                 sendPhoto.setPhoto(new InputFile(new File("img/help.jpg")));
-                sendPhoto.setReplyMarkup(Button.getStartButton());
                 break;
 
             case "создать-анкету-админа":
@@ -91,7 +92,6 @@ public class BotService {
                                 .description(parameters[1])
                                 .build();
 
-                        sendPhoto.setChatId(String.valueOf(chatId));
                         sendPhoto.setCaption(profileService.create(newProfile).toString());
                         sendPhoto.setPhoto(new InputFile(new File("img/create.jpg")));
                     } else {
@@ -100,29 +100,43 @@ public class BotService {
                     }
 
                 } catch (DuplicateEntityException e) {
-                    sendPhoto.setChatId(String.valueOf(chatId));
+                    log.error("Error occurred: " + e.getMessage());
+
                     sendPhoto.setCaption(e.getMessage());
                     sendPhoto.setPhoto(new InputFile(new File("img/error.jpg")));
                 }
 
+                sendPhoto.setChatId(String.valueOf(chatId));
                 sendPhoto.setReplyMarkup(Button.getStartButton());
                 break;
 
             case "редактировать-анкету":
                 log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
 
-                if (parameters.length == 2) {
-                    Profile updateProfile = profileService.getByUsername(userName);
+                try {
+                    if (!profileService.containsProfile(userName)) {
+                        throw new EntityNotFoundException(ExceptionMessage.ADMIN_NOT_FOUND_COMMAND_EXCEPTION.label);
+                    }
 
-                    updateProfile.setDescription(parameters[1]);
+                    if (parameters.length == 2) {
+                        Profile updateProfile = profileService.getByUsername(userName);
 
-                    sendPhoto.setCaption(profileService.update(updateProfile).toString());
-                } else {
-                    sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
+                        updateProfile.setDescription(parameters[1]);
+
+                        sendPhoto.setCaption(profileService.update(updateProfile).toString());
+                    } else {
+                        sendPhoto.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
+                    }
+
+                    sendPhoto.setPhoto(new InputFile(new File("img/update.jpg")));
+                } catch (EntityNotFoundException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
+                    sendPhoto.setCaption(e.getMessage());
+                    sendPhoto.setPhoto(new InputFile(new File("img/notFound.jpg")));
                 }
 
                 sendPhoto.setChatId(String.valueOf(chatId));
-                sendPhoto.setPhoto(new InputFile(new File("img/update.jpg")));
                 sendPhoto.setReplyMarkup(Button.getStartButton());
                 break;
 
@@ -130,12 +144,15 @@ public class BotService {
                 try {
                     log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
 
+                    if (!profileService.containsProfile(userName)) {
+                        throw new EntityNotFoundException(ExceptionMessage.ADMIN_NOT_FOUND_COMMAND_EXCEPTION.label);
+                    }
+
                     Profile oldProfile = profileService.getByUsername(userName);
 
                     profileService.deleteById(oldProfile.getId());
                     Files.deleteIfExists(Path.of(oldProfile.getPathFile()));
 
-                    sendPhoto.setChatId(String.valueOf(chatId));
                     sendPhoto.setReplyMarkup(Button.getStartButton());
                     sendPhoto.setPhoto(new InputFile(new File("img/delete.jpg")));
                     sendPhoto.setCaption(CommandMessage.TRY_DELETE_FORM_COMMAND.label);
@@ -152,12 +169,17 @@ public class BotService {
                     sendPhoto.setPhoto(new InputFile(new File("img/error.jpg")));
                 }
 
+                sendPhoto.setChatId(String.valueOf(chatId));
                 break;
 
 //                Товар под заказ (полка с товарами)
             case "создать-товар":
                 try {
                     log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
+
+                    if (!profileService.containsProfile(userName)) {
+                        throw new EntityNotFoundException(ExceptionMessage.ADMIN_NOT_FOUND_COMMAND_EXCEPTION.label);
+                    }
 
                     Profile profile = profileService.getByUsername(userName);
                     Category category = categoryService.getByName(parameters[4]);
@@ -184,6 +206,10 @@ public class BotService {
             case "редактировать-товар":
                 try {
                     log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
+
+                    if (!profileService.containsProfile(userName)) {
+                        throw new EntityNotFoundException(ExceptionMessage.ADMIN_NOT_FOUND_COMMAND_EXCEPTION.label);
+                    }
 
                     Long id = Long.parseLong(parameters[1]);
                     Product product = updateProduct(productService.getById(id), parameters);
@@ -216,6 +242,10 @@ public class BotService {
                 try {
                     log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
 
+                    if (!profileService.containsProfile(userName)) {
+                        throw new EntityNotFoundException(ExceptionMessage.ADMIN_NOT_FOUND_COMMAND_EXCEPTION.label);
+                    }
+
                     Long id = Long.parseLong(parameters[1]);
                     productService.getById(id);
                     productService.deleteById(id);
@@ -243,6 +273,10 @@ public class BotService {
                 try {
                     log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
 
+                    if (!profileService.containsProfile(userName)) {
+                        throw new EntityNotFoundException(ExceptionMessage.ADMIN_NOT_FOUND_COMMAND_EXCEPTION.label);
+                    }
+
                     Profile profile = profileService.getByUsername(userName);
                     Feedback newFeedback = feedbackService.mapToFeedback(text, profile);
 
@@ -267,6 +301,10 @@ public class BotService {
             case "редактировать-отзыв":
                 try {
                     log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
+
+                    if (!profileService.containsProfile(userName)) {
+                        throw new EntityNotFoundException(ExceptionMessage.ADMIN_NOT_FOUND_COMMAND_EXCEPTION.label);
+                    }
 
                     Long id = Long.parseLong(parameters[1]);
                     Feedback feedback = feedbackService.getById(id);
@@ -306,6 +344,10 @@ public class BotService {
                 try {
                     log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
 
+                    if (!profileService.containsProfile(userName)) {
+                        throw new EntityNotFoundException(ExceptionMessage.ADMIN_NOT_FOUND_COMMAND_EXCEPTION.label);
+                    }
+
                     Long id = Long.parseLong(parameters[1]);
                     feedbackService.getById(id);
                     feedbackService.deleteById(id);
@@ -333,9 +375,12 @@ public class BotService {
                 try {
                     log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
 
+                    if (!profileService.containsProfile(userName)) {
+                        throw new EntityNotFoundException(ExceptionMessage.ADMIN_NOT_FOUND_COMMAND_EXCEPTION.label);
+                    }
+
                     Category newCategory = categoryService.mapToCategory(text);
 
-                    sendPhoto.setChatId(String.valueOf(chatId));
                     sendPhoto.setCaption(categoryService.create(newCategory).toString());
                     sendPhoto.setPhoto(new InputFile(new File("img/create.jpg")));
                 } catch (EntityNotFoundException e) {
@@ -350,21 +395,38 @@ public class BotService {
                     sendPhoto.setPhoto(new InputFile(new File("img/error.jpg")));
                 }
 
+                sendPhoto.setChatId(String.valueOf(chatId));
                 sendPhoto.setReplyMarkup(Button.getStartButton());
                 break;
 
             case "посмотреть-категории":
                 log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
 
+                try {
+                    if (!profileService.containsProfile(userName)) {
+                        throw new EntityNotFoundException(ExceptionMessage.ADMIN_NOT_FOUND_COMMAND_EXCEPTION.label);
+                    }
+
+                    sendPhoto.setCaption(categoryService.mapToListCategoryDto(categoryService.getAll().toString()));
+                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                } catch (EntityNotFoundException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
+                    sendPhoto.setCaption(e.getMessage());
+                    sendPhoto.setPhoto(new InputFile(new File("img/notFound.jpg")));
+                }
+
                 sendPhoto.setChatId(String.valueOf(chatId));
-                sendPhoto.setCaption(categoryService.mapToListCategoryDto(categoryService.getAll().toString()));
-                sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 sendPhoto.setReplyMarkup(Button.getStartButton());
                 break;
 
             case "удалить-категорию":
                 try {
                     log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
+
+                    if (!profileService.containsProfile(userName)) {
+                        throw new EntityNotFoundException(ExceptionMessage.ADMIN_NOT_FOUND_COMMAND_EXCEPTION.label);
+                    }
 
                     Long id = Long.parseLong(parameters[1]);
                     categoryService.getById(id);
@@ -390,7 +452,16 @@ public class BotService {
 
             //Очередь
             case "посмотреть-очередь":
-                if (!queueService.getQueues().isEmpty()) {
+                try {
+                    if (!profileService.containsProfile(userName)) {
+                        throw new EntityNotFoundException(ExceptionMessage.ADMIN_NOT_FOUND_COMMAND_EXCEPTION.label);
+                    }
+
+                    if (queueService.getQueues().isEmpty()) {
+                        throw new EntityNotFoundException(ExceptionMessage.QUEUE_IS_EMPTY.label);
+                    }
+
+
                     log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
 
                     StringBuilder actualQueues = new StringBuilder();
@@ -405,10 +476,11 @@ public class BotService {
 
                     sendPhoto.setCaption(actualQueues.toString());
                     sendPhoto.setPhoto(new InputFile(new File("img/queue.jpg")));
-                } else {
-                    log.error("Error occurred: " + ExceptionMessage.QUEUE_IS_EMPTY.label);
 
-                    sendPhoto.setCaption(ExceptionMessage.QUEUE_IS_EMPTY.label);
+                } catch (EntityNotFoundException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
+                    sendPhoto.setCaption(e.getMessage());
                     sendPhoto.setPhoto(new InputFile(new File("img/notFound.jpg")));
                 }
 
@@ -419,6 +491,10 @@ public class BotService {
             case "удалить-очередь":
                 try {
                     log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
+
+                    if (!profileService.containsProfile(userName)) {
+                        throw new EntityNotFoundException(ExceptionMessage.ADMIN_NOT_FOUND_COMMAND_EXCEPTION.label);
+                    }
 
                     String username = parameters[1];
 
@@ -453,9 +529,9 @@ public class BotService {
 
         switch (parameters[0]) {
             case "создать-анкету-админа":
-                log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
-
                 try {
+                    log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
+
                     Profile newProfile;
 
                     if (profileService.containsProfile(userName)) {
@@ -477,40 +553,56 @@ public class BotService {
 
                     }
 
-                    sendPhoto.setChatId(String.valueOf(chatId));
                     sendPhoto.setCaption(profileService.create(newProfile).toString());
                     sendPhoto.setPhoto(new InputFile(new File(newProfile.getPathFile())));
-                    sendPhoto.setReplyMarkup(Button.getStartButton());
                 } catch (DuplicateEntityException e) {
-                    sendPhoto.setChatId(String.valueOf(chatId));
+                    log.error("Error occurred: " + e.getMessage());
+
                     sendPhoto.setCaption(e.getMessage());
                     sendPhoto.setPhoto(new InputFile(new File("img/error.jpg")));
                 }
 
+                sendPhoto.setChatId(String.valueOf(chatId));
+                sendPhoto.setReplyMarkup(Button.getStartButton());
                 break;
 
             case "редактировать-анкету":
-                log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
+                try {
+                    log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
 
-                Profile updateProfile = profileService.getByUsername(userName);
+                    if (!profileService.containsProfile(userName)) {
+                        throw new EntityNotFoundException(ExceptionMessage.ADMIN_NOT_FOUND_COMMAND_EXCEPTION.label);
+                    }
 
-                if (parameters.length == 2) {
-                    updateProfile.setDescription(parameters[1]);
-                    updateProfile.setPathFile(photo.getPath());
-                } else {
-                    updateProfile.setPathFile(photo.getPath());
+                    Profile updateProfile = profileService.getByUsername(userName);
+
+                    if (parameters.length == 2) {
+                        updateProfile.setDescription(parameters[1]);
+                        updateProfile.setPathFile(photo.getPath());
+                    } else {
+                        updateProfile.setPathFile(photo.getPath());
+                    }
+
+                    sendPhoto.setCaption(profileService.update(updateProfile).toString());
+                    sendPhoto.setPhoto(new InputFile(new File(updateProfile.getPathFile())));
+                } catch (EntityNotFoundException e) {
+                    log.error("Error occurred: " + e.getMessage());
+
+                    sendPhoto.setCaption(e.getMessage());
+                    sendPhoto.setPhoto(new InputFile(new File("img/notFound.jpg")));
                 }
 
                 sendPhoto.setChatId(String.valueOf(chatId));
-                sendPhoto.setCaption(profileService.update(updateProfile).toString());
-                sendPhoto.setPhoto(new InputFile(new File(updateProfile.getPathFile())));
                 sendPhoto.setReplyMarkup(Button.getStartButton());
-
                 break;
 
             case "создать-товар":
                 try {
                     log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
+
+                    if (!profileService.containsProfile(userName)) {
+                        throw new EntityNotFoundException(ExceptionMessage.ADMIN_NOT_FOUND_COMMAND_EXCEPTION.label);
+                    }
 
                     Profile profile = profileService.getByUsername(userName);
                     Category category = categoryService.getByName(parameters[4]);
@@ -532,12 +624,15 @@ public class BotService {
 
                 sendPhoto.setChatId(String.valueOf(chatId));
                 sendPhoto.setReplyMarkup(Button.getStartButton());
-
                 break;
 
             case "редактировать-товар":
                 try {
                     log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
+
+                    if (!profileService.containsProfile(userName)) {
+                        throw new EntityNotFoundException(ExceptionMessage.ADMIN_NOT_FOUND_COMMAND_EXCEPTION.label);
+                    }
 
                     Long id = Long.parseLong(parameters[1]);
                     Product product = updateProduct(productService.getById(id), parameters);
@@ -568,10 +663,13 @@ public class BotService {
                 try {
                     log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
 
+                    if (!profileService.containsProfile(userName)) {
+                        throw new EntityNotFoundException(ExceptionMessage.ADMIN_NOT_FOUND_COMMAND_EXCEPTION.label);
+                    }
+
                     Profile profile = profileService.getByUsername(userName);
                     Feedback newFeedback = feedbackService.mapToFeedback(text, profile, photo.getPath());
 
-                    sendPhoto.setChatId(String.valueOf(chatId));
                     sendPhoto.setCaption(feedbackService.create(newFeedback).toString());
                     sendPhoto.setPhoto(new InputFile(new File(newFeedback.getPathFile())));
                 } catch (EntityNotFoundException e) {
@@ -586,12 +684,17 @@ public class BotService {
                     sendPhoto.setPhoto(new InputFile(new File("img/error.jpg")));
                 }
 
+                sendPhoto.setChatId(String.valueOf(chatId));
                 sendPhoto.setReplyMarkup(Button.getStartButton());
                 break;
 
             case "редактировать-отзыв":
                 try {
                     log.debug("Пользователь '" + userName + "' пытается выполнить действие '" + parameters[0] + "'");
+
+                    if (!profileService.containsProfile(userName)) {
+                        throw new EntityNotFoundException(ExceptionMessage.ADMIN_NOT_FOUND_COMMAND_EXCEPTION.label);
+                    }
 
                     Long id = Long.parseLong(parameters[1]);
                     Feedback feedback = feedbackService.getById(id);
@@ -715,7 +818,7 @@ public class BotService {
                     sendPhoto.setCaption(profileService.getByUsername(userName).toString());
                     sendPhoto.setPhoto(new InputFile(new File(profileService.getByUsername(userName).getPathFile())));
                 } else {
-                    sendPhoto.setCaption(profileService.getByUsername(userName).toStringDto());
+                    sendPhoto.setCaption(profileService.getByUsername("eee_kisel").toStringDto());
                     sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
                 }
 

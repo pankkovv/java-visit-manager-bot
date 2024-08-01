@@ -6,6 +6,7 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.objects.*;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -46,8 +47,16 @@ public class TelegramBot extends TelegramLongPollingBot {
         String userName = Utils.getUserName(update);
         Long chatId = Utils.getChatId(update);
         Object answer;
+        DeleteMessage deleteMessage = new DeleteMessage();
 
         try {
+            deleteMessage.setChatId(String.valueOf(chatId));
+
+            if (msg != null) {
+                deleteMessage.setMessageId(msg.getMessageId());
+            } else {
+                deleteMessage.setMessageId(cbq.getMessage().getMessageId());
+            }
 
             if (cbq != null) {
                 answer = service.parseCommand(chatId, userName, cbq);
@@ -91,8 +100,27 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             if (answer.getClass().equals(SendPhoto.class)) {
                 execute((SendPhoto) answer);
+                execute(deleteMessage);
+
+                if (msg != null) {
+                    deleteMessage.setMessageId(msg.getMessageId() - 1);
+                } else {
+                    deleteMessage.setMessageId(cbq.getMessage().getMessageId() - 1);
+                }
+
+                execute(deleteMessage);
+
             } else if (answer.getClass().equals(SendMessage.class)) {
                 execute((SendMessage) answer);
+                execute(deleteMessage);
+
+                if (msg != null) {
+                    deleteMessage.setMessageId(msg.getMessageId() - 1);
+                } else {
+                    deleteMessage.setMessageId(cbq.getMessage().getMessageId() - 1);
+                }
+
+                execute(deleteMessage);
             } else if (answer.getClass().equals(EditMessageReplyMarkup.class)) {
                 execute((EditMessageReplyMarkup) answer);
             }
@@ -100,7 +128,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             log.error("Error occurred: " + e.getMessage());
 
-            if(e.getMessage().equals("ChatId parameter can't be empty")){
+            if (e.getMessage().equals("ChatId parameter can't be empty")) {
                 SendPhoto errorMessage = new SendPhoto();
                 errorMessage.setCaption(ExceptionMessage.NOT_FOUND_COMMAND_EXCEPTION.label);
                 errorMessage.setPhoto(new InputFile(new File("img/error.jpg")));
@@ -109,6 +137,15 @@ public class TelegramBot extends TelegramLongPollingBot {
 
                 try {
                     execute(errorMessage);
+                    execute(deleteMessage);
+
+                    if (msg != null) {
+                        deleteMessage.setMessageId(msg.getMessageId() - 1);
+                    } else {
+                        deleteMessage.setMessageId(cbq.getMessage().getMessageId() - 1);
+                    }
+
+                    execute(deleteMessage);
                 } catch (TelegramApiException ex) {
                     throw new RuntimeException(e.getMessage());
                 }
