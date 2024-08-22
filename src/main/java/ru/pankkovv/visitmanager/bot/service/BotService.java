@@ -3,8 +3,6 @@ package ru.pankkovv.visitmanager.bot.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
@@ -39,7 +37,6 @@ import static ru.pankkovv.visitmanager.bot.model.Button.*;
 @Log4j
 @Service
 @AllArgsConstructor
-@PropertySource("application.properties")
 public class BotService {
     @Autowired
     private final ProfileService profileService;
