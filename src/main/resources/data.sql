@@ -15,7 +15,7 @@ VALUES (1007, 'бумажный мерч');
 
 -- Profiles
 INSERT INTO profile(id, username, description, path_file)
-VALUES (1001, 'eee_kisel', 'Привет! Я Киселева Ульяна, рисую под ником «Кисель». Здесь ты можешь познакомиться с моим творчеством и сделать заказ!', 'img/start.jpg');
+VALUES (1001, 'eee_kisel', 'Привет! Я Киселева Ульяна, рисую под ником «Кисель». Здесь ты можешь познакомиться с моим творчеством и сделать заказ!', null);
 INSERT INTO profile(id, username, description, path_file)
 VALUES (1002, 'pankkovv', 'New admin this bot', 'img/start.jpg');
 

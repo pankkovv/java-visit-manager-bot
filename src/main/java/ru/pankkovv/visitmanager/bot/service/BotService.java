@@ -3,6 +3,8 @@ package ru.pankkovv.visitmanager.bot.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
@@ -37,6 +39,7 @@ import static ru.pankkovv.visitmanager.bot.model.Button.*;
 @Log4j
 @Service
 @AllArgsConstructor
+@PropertySource("application.properties")
 public class BotService {
     @Autowired
     private final ProfileService profileService;
@@ -408,7 +411,7 @@ public class BotService {
                     }
 
                     sendPhoto.setCaption(categoryService.mapToListCategoryDto(categoryService.getAll().toString()));
-                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                    sendPhoto.setPhoto(new InputFile(new File("img/category.jpg")));
                 } catch (EntityNotFoundException e) {
                     log.error("Error occurred: " + e.getMessage());
 
@@ -734,6 +737,7 @@ public class BotService {
     public Object parseCommand(Long chatId, String userName, CallbackQuery cbq) {
         SendPhoto sendPhoto = new SendPhoto();
         String button = ButtonData.valueOf(cbq.getData().toUpperCase()).label;
+        String designerName = "eee_kisel";
 
         switch (button) {
             case "start_btn":
@@ -814,12 +818,19 @@ public class BotService {
             case "about_me_btn":
                 log.debug("Пользователь '" + userName + "' нажал кнопку '" + button + "'");
 
-                if (profileService.containsProfile(userName)) {
-                    sendPhoto.setCaption(profileService.getByUsername(userName).toString());
-                    sendPhoto.setPhoto(new InputFile(new File(profileService.getByUsername(userName).getPathFile())));
+                if (profileService.containsProfile(designerName)) {
+                    Profile designer = profileService.getByUsername(designerName);
+                    sendPhoto.setCaption(designer.toString());
+
+                    if (designer.getPathFile() != null) {
+                        sendPhoto.setPhoto(new InputFile(new File(profileService.getByUsername(designerName).getPathFile())));
+                    } else {
+                        sendPhoto.setPhoto(new InputFile(new File("img/about.jpg")));
+                    }
+
                 } else {
-                    sendPhoto.setCaption(profileService.getByUsername("eee_kisel").toStringDto());
-                    sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                    sendPhoto.setCaption(ExceptionMessage.DESIGNER_NOT_FOUND.label);
+                    sendPhoto.setPhoto(new InputFile(new File("img/about.jpg")));
                 }
 
                 sendPhoto.setChatId(String.valueOf(chatId));
@@ -1354,7 +1365,7 @@ public class BotService {
             if (feedback.getPathFile() != null) {
                 sendPhoto.setPhoto(new InputFile(new File(feedback.getPathFile())));
             } else {
-                sendPhoto.setPhoto(new InputFile(new File("img/start.jpg")));
+                sendPhoto.setPhoto(new InputFile(new File("img/feedback.jpg")));
             }
 
             if (paginationFeedback == 1) {
