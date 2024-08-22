@@ -146,18 +146,18 @@ boolean existsByUsername(String username);
 ## Пример java-кода:
 
 ```java
-        log.debug("Пользователь '" + userName + "' нажал кнопку '" + button + "'");
+log.debug("Пользователь '" + userName + "' нажал кнопку '" + button + "'");
 
-        if (profileService.containsProfile(userName)) {
-        sendPhoto.setCaption(CommandMessage.HELP_ADMIN.label);
-        sendPhoto.setReplyMarkup(Button.getHelpAdminButton());
-        } else {
-        sendPhoto.setCaption(CommandMessage.HELP_COMMON.label);
-        sendPhoto.setReplyMarkup(Button.getStartButton());
-        }
+if (profileService.containsProfile(userName)) {
+    sendPhoto.setCaption(CommandMessage.HELP_ADMIN.label);
+    sendPhoto.setReplyMarkup(Button.getHelpAdminButton());
+} else {
+    sendPhoto.setCaption(CommandMessage.HELP_COMMON.label);
+    sendPhoto.setReplyMarkup(Button.getStartButton());
+}
 
-        sendPhoto.setChatId(String.valueOf(chatId));
-        sendPhoto.setPhoto(new InputFile(new File("img/help.jpg")));
+sendPhoto.setChatId(String.valueOf(chatId));
+sendPhoto.setPhoto(new InputFile(new File("img/help.jpg")));
 ```
 ----
 ## Стек
