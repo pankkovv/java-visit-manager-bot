@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS profile, category, product, feedback, queue CASCADE;
+-- DROP TABLE IF EXISTS profile, category, product, feedback, queue CASCADE;
 
 CREATE TABLE IF NOT EXISTS profile
 (
